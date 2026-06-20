@@ -270,7 +270,7 @@ add_text(
     Inches(2.35),
     Inches(4.25),
     Inches(1.1),
-    u(r"\u0420\u0430\u0431\u043e\u0447\u0430\u044f \u043e\u0437\u0432\u0443\u0447\u043a\u0430 \u0443\u0436\u0435 \u043f\u043e\u0434\u0433\u043e\u0442\u043e\u0432\u043b\u0435\u043d\u0430:\nS002-P01_ozvuchka_osnovnaya.mp3"),
+    u(r"\u0420\u0430\u0431\u043e\u0447\u0430\u044f \u043e\u0437\u0432\u0443\u0447\u043a\u0430 \u0443\u0436\u0435 \u043f\u043e\u0434\u0433\u043e\u0442\u043e\u0432\u043b\u0435\u043d\u0430:\nS002-P01_ozvuchka_55_sec_stress_2026-06-20.mp3"),
     17,
     False,
     TEXT,
