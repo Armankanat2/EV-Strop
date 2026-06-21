@@ -34,3 +34,9 @@ assets/raw/*
 !assets/raw/.gitkeep
 data/raw/*
 !data/raw/.gitkeep
+
+# Local heavy media
+assets/reference_visuals/visual-bank/images/*.png
+presentations/ispring-course/module-01-stropovka-gruzov/live-preview/video-build/
+tmp-primary-screen.png
+tmp_lifting_operation/
