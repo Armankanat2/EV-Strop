@@ -8,6 +8,9 @@ from pptx.util import Inches, Pt
 
 
 OUT_DIR = Path(__file__).resolve().parent
+ROOT_DIR = Path(__file__).resolve().parents[4]
+ASSET_DIR = ROOT_DIR / "assets" / "course-media" / "module-01-stropovka-gruzov" / "images"
+S004_IMAGE = ASSET_DIR / "S004_avatar-1_signal-podnyat-gruz_white-bg.png"
 OUT_FILE = OUT_DIR / "S001-S007_live_preview_working_2026-06-22_v4.pptx"
 
 
@@ -148,6 +151,26 @@ def add_panel(slide, x, y, w, h, title, lines, accent):
     return panel
 
 
+def add_requirement_card(slide, x, y, w, h, text, accent=ORANGE, fill=WHITE, size=22):
+    card = slide.shapes.add_shape(MSO_AUTO_SHAPE_TYPE.ROUNDED_RECTANGLE, x, y, w, h)
+    card.fill.solid()
+    card.fill.fore_color.rgb = fill
+    card.line.color.rgb = accent
+    card.line.width = Pt(1.8)
+    tf = card.text_frame
+    tf.clear()
+    tf.word_wrap = True
+    tf.vertical_anchor = MSO_ANCHOR.MIDDLE
+    p = tf.paragraphs[0]
+    p.alignment = PP_ALIGN.CENTER
+    r = p.add_run()
+    r.text = text
+    r.font.size = Pt(size)
+    r.font.bold = True
+    r.font.color.rgb = accent
+    return card
+
+
 def add_header_cell(slide, x, y, w, h, text, fill, font_size=15):
     cell = slide.shapes.add_shape(MSO_AUTO_SHAPE_TYPE.RECTANGLE, x, y, w, h)
     cell.fill.solid()
@@ -241,7 +264,47 @@ def add_glossary_column(slide, x, y, w, h, items, term_size=12, body_size=11):
         def_run.font.size = Pt(body_size)
         def_run.font.color.rgb = TEXT
     return box
-    return panel
+
+
+def add_definition_block(slide, x, y, w, h, accent, title, term, definition):
+    panel = slide.shapes.add_shape(MSO_AUTO_SHAPE_TYPE.ROUNDED_RECTANGLE, x, y, w, h)
+    panel.fill.solid()
+    panel.fill.fore_color.rgb = WHITE
+    panel.line.color.rgb = accent
+    panel.line.width = Pt(1.5)
+
+    head = slide.shapes.add_shape(MSO_AUTO_SHAPE_TYPE.ROUNDED_RECTANGLE, x, y, w, Inches(0.68))
+    head.fill.solid()
+    head.fill.fore_color.rgb = accent
+    head.line.color.rgb = accent
+    tf = head.text_frame
+    tf.clear()
+    tf.vertical_anchor = MSO_ANCHOR.MIDDLE
+    p = tf.paragraphs[0]
+    p.alignment = PP_ALIGN.CENTER
+    r = p.add_run()
+    r.text = title
+    r.font.size = Pt(20)
+    r.font.bold = True
+    r.font.color.rgb = WHITE
+
+    body = slide.shapes.add_textbox(x + Inches(0.32), y + Inches(0.98), w - Inches(0.64), h - Inches(1.22))
+    tf = body.text_frame
+    tf.clear()
+    tf.word_wrap = True
+    p = tf.paragraphs[0]
+    p.alignment = PP_ALIGN.LEFT
+    p.space_after = Pt(0)
+    term_run = p.add_run()
+    term_run.text = term
+    term_run.font.size = Pt(18)
+    term_run.font.bold = True
+    term_run.font.color.rgb = NAVY
+    def_run = p.add_run()
+    def_run.text = u(r" \u2014 ") + definition
+    def_run.font.size = Pt(18)
+    def_run.font.color.rgb = TEXT
+    return panel, head, body
 
 
 def add_detail_table(slide, title, code, doc_name, about, importance, accent):
@@ -711,34 +774,27 @@ add_band(
     "S004",
     u(r"\u0422\u0435\u043c\u0430 1 \u2022 \u043e\u0431\u0449\u0430\u044f \u0447\u0430\u0441\u0442\u044c"),
 )
-add_panel(
-    s6,
-    Inches(0.7),
-    Inches(1.45),
-    Inches(5.8),
-    Inches(4.7),
-    u(r"\u041e\u0441\u043d\u043e\u0432\u043d\u044b\u0435 \u0434\u0435\u0439\u0441\u0442\u0432\u0438\u044f"),
-    [
-        u(r"\u041f\u043e\u0434\u0431\u0438\u0440\u0430\u0435\u0442 \u0438 \u043f\u0440\u043e\u0432\u0435\u0440\u044f\u0435\u0442 \u0441\u0442\u0440\u043e\u043f\u044b."),
-        u(r"\u0421\u0442\u0440\u043e\u043f\u0438\u0442 \u0433\u0440\u0443\u0437 \u043f\u043e \u0441\u0445\u0435\u043c\u0435."),
-        u(r"\u041f\u043e\u0434\u0430\u0435\u0442 \u0441\u0438\u0433\u043d\u0430\u043b\u044b \u043a\u0440\u0430\u043d\u043e\u0432\u0449\u0438\u043a\u0443."),
-        u(r"\u0421\u043b\u0435\u0434\u0438\u0442 \u0437\u0430 \u0431\u0435\u0437\u043e\u043f\u0430\u0441\u043d\u044b\u043c \u043f\u0435\u0440\u0435\u043c\u0435\u0449\u0435\u043d\u0438\u0435\u043c \u0433\u0440\u0443\u0437\u0430."),
-    ],
-    BLUE,
+photo_frame = s6.shapes.add_shape(
+    MSO_AUTO_SHAPE_TYPE.ROUNDED_RECTANGLE, Inches(0.7), Inches(1.38), Inches(7.0), Inches(4.95)
 )
-add_panel(
+photo_frame.fill.solid()
+photo_frame.fill.fore_color.rgb = WHITE
+photo_frame.line.color.rgb = LINE
+photo_frame.line.width = Pt(1.2)
+s6.shapes.add_picture(str(S004_IMAGE), Inches(0.92), Inches(1.6), width=Inches(6.55), height=Inches(4.37))
+
+add_definition_block(
     s6,
-    Inches(6.9),
-    Inches(1.45),
-    Inches(5.7),
-    Inches(4.7),
-    u(r"\u041e\u0442\u0432\u0435\u0442\u0441\u0442\u0432\u0435\u043d\u043d\u043e\u0441\u0442\u044c"),
-    [
-        u(r"\u041e\u043d \u043e\u0442\u0432\u0435\u0447\u0430\u0435\u0442 \u043d\u0435 \u0442\u043e\u043b\u044c\u043a\u043e \u0437\u0430 \u0441\u0442\u0440\u043e\u043f, \u043d\u043e \u0438 \u0437\u0430 \u0431\u0435\u0437\u043e\u043f\u0430\u0441\u043d\u043e\u0441\u0442\u044c."),
-        u(r"\u041e\u0448\u0438\u0431\u043a\u0430 \u043f\u0440\u0438 \u0441\u0442\u0440\u043e\u043f\u043e\u0432\u043a\u0435 \u043c\u043e\u0436\u0435\u0442 \u043f\u0440\u0438\u0432\u0435\u0441\u0442\u0438 \u043a \u0430\u0432\u0430\u0440\u0438\u0438."),
-        u(r"\u041f\u043e\u044d\u0442\u043e\u043c\u0443 \u0432\u0441\u0435 \u0434\u0435\u0439\u0441\u0442\u0432\u0438\u044f \u0434\u043e\u043b\u0436\u043d\u044b \u0431\u044b\u0442\u044c \u0442\u043e\u0447\u043d\u044b\u043c\u0438 \u0438 \u043f\u043e \u043f\u0440\u0430\u0432\u0438\u043b\u0430\u043c."),
-    ],
-    GREEN,
+    Inches(7.95),
+    Inches(1.38),
+    Inches(4.75),
+    Inches(4.25),
+    ORANGE,
+    u(r"\u041e\u043f\u0440\u0435\u0434\u0435\u043b\u0435\u043d\u0438\u0435 \u043f\u0440\u043e\u0444\u0435\u0441\u0441\u0438\u0438"),
+    u(r"\u0421\u0442\u0440\u043e\u043f\u0430\u043b\u044c\u0449\u0438\u043a"),
+    u(
+        r"\u0440\u0430\u0431\u043e\u0447\u0430\u044f \u043f\u0440\u043e\u0444\u0435\u0441\u0441\u0438\u044f, \u0441\u0432\u044f\u0437\u0430\u043d\u043d\u0430\u044f \u0441 \u043f\u043e\u0434\u0433\u043e\u0442\u043e\u0432\u043a\u043e\u0439, \u043e\u0431\u0432\u044f\u0437\u043a\u043e\u0439, \u0437\u0430\u0446\u0435\u043f\u043a\u043e\u0439 \u0438 \u0431\u0435\u0437\u043e\u043f\u0430\u0441\u043d\u044b\u043c \u043f\u0435\u0440\u0435\u043c\u0435\u0449\u0435\u043d\u0438\u0435\u043c \u0433\u0440\u0443\u0437\u043e\u0432 \u0441 \u043f\u043e\u043c\u043e\u0449\u044c\u044e \u0433\u0440\u0443\u0437\u043e\u043f\u043e\u0434\u044a\u0451\u043c\u043d\u044b\u0445 \u043c\u0435\u0445\u0430\u043d\u0438\u0437\u043c\u043e\u0432."
+    ),
 )
 back_s4, next_s4 = add_linear_nav(s6, u(r"\u041d\u0410\u0417\u0410\u0414"), u(r"\u0414\u0410\u041b\u0415\u0415"))
 
@@ -752,35 +808,63 @@ add_band(
     "S005",
     u(r"\u0422\u0435\u043c\u0430 1 \u2022 \u043e\u0431\u0449\u0430\u044f \u0447\u0430\u0441\u0442\u044c"),
 )
-add_panel(
-    s7,
-    Inches(0.7),
-    Inches(1.45),
-    Inches(5.8),
-    Inches(4.7),
-    u(r"\u0414\u043e\u043f\u0443\u0441\u043a \u043a \u0440\u0430\u0431\u043e\u0442\u0435"),
-    [
-        u(r"\u041f\u0440\u043e\u0448\u0435\u043b \u043e\u0431\u0443\u0447\u0435\u043d\u0438\u0435."),
-        u(r"\u041f\u0440\u043e\u0448\u0435\u043b \u0438\u043d\u0441\u0442\u0440\u0443\u043a\u0442\u0430\u0436."),
-        u(r"\u0421\u0434\u0430\u043b \u043f\u0440\u043e\u0432\u0435\u0440\u043a\u0443 \u0437\u043d\u0430\u043d\u0438\u0439."),
-        u(r"\u041f\u043e\u043b\u0443\u0447\u0438\u043b \u0434\u043e\u043f\u0443\u0441\u043a \u0440\u0430\u0431\u043e\u0442\u043e\u0434\u0430\u0442\u0435\u043b\u044f."),
-        u(r"\u0418\u0441\u043f\u043e\u043b\u044c\u0437\u0443\u0435\u0442 \u0421\u0418\u0417."),
-    ],
-    BLUE,
+main_board = s7.shapes.add_shape(
+    MSO_AUTO_SHAPE_TYPE.ROUNDED_RECTANGLE, Inches(0.76), Inches(1.3), Inches(11.8), Inches(5.02)
 )
-add_panel(
+main_board.fill.solid()
+main_board.fill.fore_color.rgb = WHITE
+main_board.line.color.rgb = LINE
+main_board.line.width = Pt(1.2)
+
+add_text(
     s7,
-    Inches(6.9),
-    Inches(1.45),
-    Inches(5.7),
-    Inches(4.7),
-    u(r"\u0412\u0430\u0436\u043d\u044b\u0439 \u0432\u044b\u0432\u043e\u0434"),
-    [
-        u(r"\u0414\u043e\u043f\u0443\u0441\u043a \u043a \u0440\u0430\u0431\u043e\u0442\u0435 - \u044d\u0442\u043e \u043d\u0435 \u0444\u043e\u0440\u043c\u0430\u043b\u044c\u043d\u043e\u0441\u0442\u044c."),
-        u(r"\u0411\u0435\u0437 \u043f\u043e\u0434\u0433\u043e\u0442\u043e\u0432\u043a\u0438 \u0438 \u043f\u0440\u043e\u0432\u0435\u0440\u043a\u0438 \u0437\u043d\u0430\u043d\u0438\u0439 \u0440\u0430\u0431\u043e\u0442\u0430\u0442\u044c \u043d\u0435\u043b\u044c\u0437\u044f."),
-        u(r"\u0411\u0435\u0437\u043e\u043f\u0430\u0441\u043d\u0430\u044f \u0440\u0430\u0431\u043e\u0442\u0430 \u043d\u0430\u0447\u0438\u043d\u0430\u0435\u0442\u0441\u044f \u0441 \u0434\u043e\u043f\u0443\u0441\u043a\u0430."),
-    ],
-    GREEN,
+    Inches(1.25),
+    Inches(1.58),
+    Inches(10.6),
+    Inches(0.38),
+    u(r"\u041a \u0440\u0430\u0431\u043e\u0442\u0435 \u0434\u043e\u043f\u0443\u0441\u043a\u0430\u044e\u0442\u0441\u044f \u0440\u0430\u0431\u043e\u0442\u043d\u0438\u043a\u0438, \u043a\u043e\u0442\u043e\u0440\u044b\u0435:"),
+    16,
+    False,
+    GRAY,
+    PP_ALIGN.CENTER,
+)
+
+add_requirement_card(
+    s7,
+    Inches(1.22),
+    Inches(2.12),
+    Inches(5.1),
+    Inches(1.18),
+    u(r"18 \u043b\u0435\u0442 \u0438 \u0441\u0442\u0430\u0440\u0448\u0435"),
+    size=24,
+)
+add_requirement_card(
+    s7,
+    Inches(6.76),
+    Inches(2.12),
+    Inches(5.1),
+    Inches(1.18),
+    u(r"\u043c\u0435\u0434\u0438\u0446\u0438\u043d\u0441\u043a\u0438\u0439 \u043e\u0441\u043c\u043e\u0442\u0440"),
+    size=22,
+)
+
+add_requirement_card(
+    s7,
+    Inches(1.22),
+    Inches(3.72),
+    Inches(5.1),
+    Inches(1.42),
+    u(r"\u043e\u0431\u0443\u0447\u0435\u043d\u043d\u044b\u0435\n\u0438 \u0430\u0442\u0442\u0435\u0441\u0442\u043e\u0432\u0430\u043d\u043d\u044b\u0435"),
+    size=22,
+)
+add_requirement_card(
+    s7,
+    Inches(6.76),
+    Inches(3.72),
+    Inches(5.1),
+    Inches(1.42),
+    u(r"\u043f\u043e\u043b\u0443\u0447\u0438\u0432\u0448\u0438\u0435 \u0443\u0434\u043e\u0441\u0442\u043e\u0432\u0435\u0440\u0435\u043d\u0438\u0435"),
+    size=21,
 )
 back_s5, next_s5 = add_linear_nav(s7, u(r"\u041d\u0410\u0417\u0410\u0414"), u(r"\u0414\u0410\u041b\u0415\u0415"))
 
