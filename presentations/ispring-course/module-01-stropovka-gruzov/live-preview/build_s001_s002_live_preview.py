@@ -9,8 +9,6 @@ from pptx.util import Inches, Pt
 
 OUT_DIR = Path(__file__).resolve().parent
 ROOT_DIR = Path(__file__).resolve().parents[4]
-ASSET_DIR = ROOT_DIR / "assets" / "course-media" / "module-01-stropovka-gruzov" / "images"
-S004_IMAGE = ASSET_DIR / "S004_avatar-1_signal-podnyat-gruz_white-bg.png"
 OUT_FILE = OUT_DIR / "S001-S007_live_preview_working_2026-06-22_v4.pptx"
 
 
@@ -208,7 +206,7 @@ def add_body_cell(slide, x, y, w, h, text, align=PP_ALIGN.LEFT, fill=WHITE, size
     return cell
 
 
-def add_info_panel(slide, x, y, w, h, title, lines, accent=GREEN):
+def add_info_panel(slide, x, y, w, h, title, lines, accent=GREEN, name_prefix=None):
     panel = slide.shapes.add_shape(MSO_AUTO_SHAPE_TYPE.ROUNDED_RECTANGLE, x, y, w, h)
     panel.fill.solid()
     panel.fill.fore_color.rgb = WHITE
@@ -242,6 +240,10 @@ def add_info_panel(slide, x, y, w, h, title, lines, accent=GREEN):
         if p.runs:
             p.runs[0].font.size = Pt(15)
             p.runs[0].font.color.rgb = TEXT
+    if name_prefix:
+        panel.name = f"{name_prefix}_PANEL"
+        head.name = f"{name_prefix}_HEAD"
+        body.name = f"{name_prefix}_BODY"
     return panel, head, body
 
 
@@ -689,6 +691,7 @@ current_y = table_y + Inches(0.56)
 for idx, row in enumerate(rows):
     fill = WHITE if idx % 2 == 0 else RGBColor(248, 250, 252)
     law_cell = add_body_cell(s5, table_x, current_y, law_w, row_h, row[0], PP_ALIGN.LEFT, fill, 15, True)
+    law_cell.name = f"S003_LAW_LINK_{idx + 1:02d}"
     add_body_cell(s5, table_x + law_w, current_y, date_w, row_h, row[1], PP_ALIGN.CENTER, fill, 14, False)
     add_body_cell(s5, table_x + law_w + date_w, current_y, issuer_w, row_h, row[2], PP_ALIGN.LEFT, fill, 13, False)
     main_click_shapes.append(law_cell)
@@ -705,8 +708,11 @@ info_panel_shapes = add_info_panel(
         u(r"\u041d\u0430\u0436\u043c\u0438\u0442\u0435 \u043d\u0430 \u043d\u0430\u0437\u0432\u0430\u043d\u0438\u0435 \u0434\u043e\u043a\u0443\u043c\u0435\u043d\u0442\u0430."),
     ],
     GREEN,
+    "S003_INFO",
 )
 back_s3, next_s3 = add_linear_nav(s5, u(r"\u041d\u0410\u0417\u0410\u0414"), u(r"\u0414\u0410\u041b\u0415\u0415"))
+back_s3.name = "S003_BACK"
+next_s3.name = "S003_NEXT"
 
 
 # S003-P01
@@ -721,6 +727,7 @@ add_detail_table(
     BLUE,
 )
 p01_back_main = add_button(s5_p01, Inches(0.7), Inches(6.55), Inches(2.35), Inches(0.5), u(r"\u041d\u0410\u0417\u0410\u0414"), STEEL, 18)
+p01_back_main.name = "S003_P01_BACK"
 
 
 # S003-P02
@@ -735,6 +742,7 @@ add_detail_table(
     GREEN,
 )
 p02_back_main = add_button(s5_p02, Inches(0.7), Inches(6.55), Inches(2.35), Inches(0.5), u(r"\u041d\u0410\u0417\u0410\u0414"), STEEL, 18)
+p02_back_main.name = "S003_P02_BACK"
 
 
 # S003-P03
@@ -749,6 +757,7 @@ add_detail_table(
     STEEL,
 )
 p03_back_main = add_button(s5_p03, Inches(0.7), Inches(6.55), Inches(2.35), Inches(0.5), u(r"\u041d\u0410\u0417\u0410\u0414"), STEEL, 18)
+p03_back_main.name = "S003_P03_BACK"
 
 
 # S003-P04
@@ -763,6 +772,7 @@ add_detail_table(
     ORANGE,
 )
 p04_back_main = add_button(s5_p04, Inches(0.7), Inches(6.55), Inches(2.35), Inches(0.5), u(r"\u041d\u0410\u0417\u0410\u0414"), STEEL, 18)
+p04_back_main.name = "S003_P04_BACK"
 
 
 # S004
@@ -781,7 +791,108 @@ photo_frame.fill.solid()
 photo_frame.fill.fore_color.rgb = WHITE
 photo_frame.line.color.rgb = LINE
 photo_frame.line.width = Pt(1.2)
-s6.shapes.add_picture(str(S004_IMAGE), Inches(0.92), Inches(1.6), width=Inches(6.55), height=Inches(4.37))
+
+visual_band = s6.shapes.add_shape(
+    MSO_AUTO_SHAPE_TYPE.ROUNDED_RECTANGLE, Inches(0.95), Inches(1.62), Inches(6.5), Inches(0.62)
+)
+visual_band.fill.solid()
+visual_band.fill.fore_color.rgb = NAVY
+visual_band.line.fill.background()
+tf = visual_band.text_frame
+tf.clear()
+tf.vertical_anchor = MSO_ANCHOR.MIDDLE
+p = tf.paragraphs[0]
+p.alignment = PP_ALIGN.CENTER
+r = p.add_run()
+r.text = u(r"\u0412\u0438\u0437\u0443\u0430\u043b\u044c\u043d\u0430\u044f \u0441\u0446\u0435\u043d\u0430")
+r.font.size = Pt(18)
+r.font.bold = True
+r.font.color.rgb = WHITE
+
+silhouette = s6.shapes.add_shape(
+    MSO_AUTO_SHAPE_TYPE.ROUNDED_RECTANGLE, Inches(1.15), Inches(2.45), Inches(2.1), Inches(2.8)
+)
+silhouette.fill.solid()
+silhouette.fill.fore_color.rgb = RGBColor(223, 230, 236)
+silhouette.line.color.rgb = STEEL
+silhouette.line.width = Pt(1.2)
+
+hook_box = s6.shapes.add_shape(
+    MSO_AUTO_SHAPE_TYPE.ROUNDED_RECTANGLE, Inches(3.55), Inches(2.45), Inches(2.75), Inches(1.2)
+)
+hook_box.fill.solid()
+hook_box.fill.fore_color.rgb = RGBColor(245, 247, 249)
+hook_box.line.color.rgb = ORANGE
+hook_box.line.width = Pt(1.2)
+
+load_box = s6.shapes.add_shape(
+    MSO_AUTO_SHAPE_TYPE.ROUNDED_RECTANGLE, Inches(3.55), Inches(4.05), Inches(2.75), Inches(1.2)
+)
+load_box.fill.solid()
+load_box.fill.fore_color.rgb = RGBColor(245, 247, 249)
+load_box.line.color.rgb = GREEN
+load_box.line.width = Pt(1.2)
+
+add_text(
+    s6,
+    Inches(1.38),
+    Inches(3.1),
+    Inches(1.55),
+    Inches(0.7),
+    u(r"\u0421\u0422\u0420\u041e\u041f\u0410\u041b\u042c\u0429\u0418\u041a"),
+    15,
+    True,
+    NAVY,
+    PP_ALIGN.CENTER,
+)
+add_text(
+    s6,
+    Inches(3.82),
+    Inches(2.8),
+    Inches(2.2),
+    Inches(0.35),
+    u(r"\u041a\u0440\u044e\u043a \u043a\u0440\u0430\u043d\u0430"),
+    16,
+    True,
+    ORANGE,
+    PP_ALIGN.CENTER,
+)
+add_text(
+    s6,
+    Inches(3.82),
+    Inches(3.12),
+    Inches(2.2),
+    Inches(0.42),
+    u(r"\u0421\u0442\u0440\u043e\u043f\u0430\u043b\u044c\u0449\u0438\u043a \u0440\u0430\u0431\u043e\u0442\u0430\u0435\u0442 \u0443 \u0437\u043e\u043d\u044b \u043f\u043e\u0434\u044a\u0435\u043c\u0430."),
+    11,
+    False,
+    TEXT,
+    PP_ALIGN.CENTER,
+)
+add_text(
+    s6,
+    Inches(3.82),
+    Inches(4.4),
+    Inches(2.2),
+    Inches(0.35),
+    u(r"\u0413\u0440\u0443\u0437 \u0438 \u0441\u0442\u0440\u043e\u043f\u044b"),
+    16,
+    True,
+    GREEN,
+    PP_ALIGN.CENTER,
+)
+add_text(
+    s6,
+    Inches(3.82),
+    Inches(4.72),
+    Inches(2.2),
+    Inches(0.42),
+    u(r"\u041e\u0442\u0432\u0435\u0447\u0430\u0435\u0442 \u0437\u0430 \u0437\u0430\u0446\u0435\u043f\u043a\u0443, \u0441\u0438\u0433\u043d\u0430\u043b\u044b \u0438 \u0431\u0435\u0437\u043e\u043f\u0430\u0441\u043d\u043e\u0435 \u043f\u0435\u0440\u0435\u043c\u0435\u0449\u0435\u043d\u0438\u0435."),
+    11,
+    False,
+    TEXT,
+    PP_ALIGN.CENTER,
+)
 
 add_definition_block(
     s6,

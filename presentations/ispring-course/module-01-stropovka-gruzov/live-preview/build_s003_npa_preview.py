@@ -137,7 +137,7 @@ def add_body_cell(slide, x, y, w, h, text, align=PP_ALIGN.LEFT, fill=WHITE, size
     return cell
 
 
-def add_info_panel(slide, x, y, w, h, title, lines, accent=GREEN):
+def add_info_panel(slide, x, y, w, h, title, lines, accent=GREEN, name_prefix=None):
     panel = slide.shapes.add_shape(MSO_AUTO_SHAPE_TYPE.ROUNDED_RECTANGLE, x, y, w, h)
     panel.fill.solid()
     panel.fill.fore_color.rgb = WHITE
@@ -166,12 +166,16 @@ def add_info_panel(slide, x, y, w, h, title, lines, accent=GREEN):
     for idx, line in enumerate(lines):
         p = tf.paragraphs[0] if idx == 0 else tf.add_paragraph()
         p.text = line
-        p.bullet = True
+        p.bullet = False
         p.space_after = Pt(8)
         if p.runs:
             p.runs[0].font.size = Pt(15)
             p.runs[0].font.color.rgb = TEXT
-    return panel
+    if name_prefix:
+        panel.name = f"{name_prefix}_PANEL"
+        head.name = f"{name_prefix}_HEAD"
+        body.name = f"{name_prefix}_BODY"
+    return panel, head, body
 
 
 def add_detail_table(slide, title, code, doc_name, about, importance, accent):
@@ -275,27 +279,29 @@ current_y = table_y + Inches(0.56)
 for idx, row in enumerate(rows):
     fill = WHITE if idx % 2 == 0 else RGBColor(248, 250, 252)
     law_cell = add_body_cell(s1, table_x, current_y, law_w, row_h, row[0], PP_ALIGN.LEFT, fill, 15, True)
+    law_cell.name = f"S003_LAW_LINK_{idx + 1:02d}"
     add_body_cell(s1, table_x + law_w, current_y, date_w, row_h, row[1], PP_ALIGN.CENTER, fill, 14, False)
     add_body_cell(s1, table_x + law_w + date_w, current_y, issuer_w, row_h, row[2], PP_ALIGN.LEFT, fill, 13, False)
     main_click_shapes.append(law_cell)
     current_y += row_h
 
-add_info_panel(
+info_panel_shapes = add_info_panel(
     s1,
     Inches(10.45),
     Inches(1.85),
     Inches(2.15),
-    Inches(3.45),
+    Inches(2.15),
     u(r"\u0418\u043d\u0442\u0435\u0440\u0430\u043a\u0442\u0438\u0432"),
     [
         u(r"\u041d\u0430\u0436\u043c\u0438\u0442\u0435 \u043d\u0430 \u043d\u0430\u0437\u0432\u0430\u043d\u0438\u0435 \u0434\u043e\u043a\u0443\u043c\u0435\u043d\u0442\u0430."),
-        u(r"\u041e\u0442\u043a\u0440\u043e\u0435\u0442\u0441\u044f \u043a\u043e\u0440\u043e\u0442\u043a\u0438\u0439 \u043f\u043e\u0434\u0432\u0430\u043b-\u0441\u043f\u0440\u0430\u0432\u043a\u0430."),
-        u(r"\u0418\u0437 \u043f\u043e\u0434\u0432\u0430\u043b\u0430 \u0435\u0441\u0442\u044c \u0432\u043e\u0437\u0432\u0440\u0430\u0442 \u0432 S003."),
     ],
     GREEN,
+    "S003_INFO",
 )
 back_btn = add_button(s1, Inches(0.7), Inches(6.55), Inches(2.35), Inches(0.5), u(r"\u041d\u0410\u0417\u0410\u0414"), STEEL)
+back_btn.name = "S003_BACK"
 next_btn = add_button(s1, Inches(10.25), Inches(6.55), Inches(2.35), Inches(0.5), u(r"\u0414\u0410\u041b\u0415\u0415"), ORANGE)
+next_btn.name = "S003_NEXT"
 
 
 # Detail slides
@@ -359,6 +365,9 @@ back_to_s003 = [
     add_button(s4, Inches(0.7), Inches(6.55), Inches(2.35), Inches(0.5), u(r"\u041d\u0410\u0417\u0410\u0414"), STEEL, 18),
     add_button(s5, Inches(0.7), Inches(6.55), Inches(2.35), Inches(0.5), u(r"\u041d\u0410\u0417\u0410\u0414"), STEEL, 18),
 ]
+
+for idx, button in enumerate(back_to_s003, start=1):
+    button.name = f"S003_P0{idx}_BACK"
 
 for button in back_to_s003:
     button.click_action.target_slide = s1
