@@ -6,6 +6,7 @@ param(
 $ErrorActionPreference = "Stop"
 
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
+. (Join-Path $scriptDir "..\..\..\..\scripts\powerpoint_stable_tools.ps1")
 
 Add-Type -AssemblyName Microsoft.Office.Interop.PowerPoint
 
@@ -136,11 +137,8 @@ function Repair-S003Deck {
     $panelExit.Timing.Duration = 0.9
 
     $pres.Save()
-    if (Test-Path $ppsxPath) {
-        Remove-Item -LiteralPath $ppsxPath -Force
-    }
-    $pres.SaveAs($ppsxPath)
     $pres.Close()
+    Export-StablePpsx -SourcePath $pptxPath -OutputPath $ppsxPath | Out-Null
 
     Write-Output $pptxPath
     Write-Output $ppsxPath
@@ -192,7 +190,9 @@ try {
     }
 }
 finally {
-    $pp.Quit()
+    if ($pp) {
+        $pp.Quit()
+    }
 }
 
 if ($failures.Count -gt 0) {

@@ -1,6 +1,7 @@
 $ErrorActionPreference = "Stop"
 
 $scriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
+. (Join-Path $scriptDir "..\..\..\..\scripts\powerpoint_stable_tools.ps1")
 $baseBuilder = Join-Path $scriptDir "build_s001_s002_live_preview.py"
 $pptxPath = Join-Path $scriptDir "S001-S002_live_preview_working.pptx"
 $ppsxPath = Join-Path $scriptDir "S001-S002_live_preview_working.ppsx"
@@ -76,14 +77,17 @@ try {
     }
 
     $pres.Save()
-    $pres.SaveCopyAs($ppsxPath)
     $pres.Close()
 } finally {
-    if ($pp.Presentations.Count -gt 0) {
+    if ($pp -and $pp.Presentations.Count -gt 0) {
         $pp.Presentations | ForEach-Object { $_.Close() }
     }
-    $pp.Quit()
+    if ($pp) {
+        $pp.Quit()
+    }
 }
+
+Export-StablePpsx -SourcePath $pptxPath -OutputPath $ppsxPath | Out-Null
 
 Write-Output $pptxPath
 Write-Output $ppsxPath
