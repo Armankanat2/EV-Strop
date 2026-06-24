@@ -6,7 +6,7 @@
 
 Ссылка:
 
-- `https://1024terabox.com/s/1KCpFJslTQu2x32TrnptnRA`
+- `https://1024terabox.com/s/1fiTSbNWgeRE1bkV-xuP1hw`
 
 Что нужно проверить:
 
@@ -28,7 +28,7 @@
 
 Ссылка на пакет:
 
-- `https://1024terabox.com/s/1KCpFJslTQu2x32TrnptnRA`
+- `https://1024terabox.com/s/1fiTSbNWgeRE1bkV-xuP1hw`
 
 Состав пакета:
 

@@ -4,8 +4,8 @@
 
 Актуальная публичная ссылка на пакет сверки:
 
-- `https://1024terabox.com/s/1KCpFJslTQu2x32TrnptnRA`
-- пакет: `2026-06-24_module-01_sync.zip`
+- `https://1024terabox.com/s/1fiTSbNWgeRE1bkV-xuP1hw`
+- пакет: `2026-06-24_module-01_sync_v02.zip`
 
 ## Назначение
 

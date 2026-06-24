@@ -4,7 +4,7 @@ Package root for shared project materials intended for `TeraBox`.
 
 Public share link:
 
-- `https://1024terabox.com/s/1KCpFJslTQu2x32TrnptnRA`
+- `https://1024terabox.com/s/1fiTSbNWgeRE1bkV-xuP1hw`
 
 Current priority package:
 
