@@ -780,7 +780,7 @@ $OCHRE = RgbValue 207 141 62
 $workspaceRoot = (Resolve-Path (Join-Path $scriptDir "..\..\..\..")).Path
 $livePreviewDir = Join-Path $workspaceRoot "presentations\ispring-course\module-01-stropovka-gruzov\live-preview"
 $sourcePath = Join-Path $livePreviewDir "S001-S007_live_preview_working_2026-06-24_v32.pptx"
-$outputPath = Join-Path $livePreviewDir "S001-S021_live_preview_working_2026-06-25_v25.pptx"
+$outputPath = Join-Path $livePreviewDir "S001-S021_live_preview_working_2026-06-25_v29.pptx"
 
 $assetRoot = Join-Path $workspaceRoot "assets\course-media\module-01-stropovka-gruzov\diagrams\error-analysis"
 $imageMap = @{
@@ -809,7 +809,7 @@ try {
     $substDrive = Get-FreeSubstDrive
     & subst $substDrive $workspaceRoot | Out-Null
     $aliasRoot = $substDrive
-    $outputAlias = Join-Path $aliasRoot "presentations\ispring-course\module-01-stropovka-gruzov\live-preview\S001-S021_live_preview_working_2026-06-25_v25.pptx"
+    $outputAlias = Join-Path $aliasRoot "presentations\ispring-course\module-01-stropovka-gruzov\live-preview\S001-S021_live_preview_working_2026-06-25_v29.pptx"
     $craneImageRoot = Join-Path $aliasRoot "assets\course-media\module-01-stropovka-gruzov\images\cranes"
     $visualBankRoot = Join-Path $aliasRoot "assets\reference_visuals\visual-bank\images"
     $script:HookSchemeImagePath = Join-Path $visualBankRoot "VIS-0020_hook-safety-diagram-restored_s008-p03-pp02.png"
@@ -869,16 +869,16 @@ try {
     ) | Out-Null
 
     $slides["S011"] = New-ThemeSlide -Presentation $presentation -Code "S011" -Title "Сведения о грузах" -Subtitle "Один груз — не одно и то же решение"
-    Add-BulletPanel -Slide $slides["S011"] -Left 0.82 -Top 1.66 -Width 5.66 -Height 4.80 -Title "На что смотрим сначала" -Lines @(
-        "Не работай на спешке.",
-        "Определи тип груза и условия подъема.",
-        "Проверь, одинаково ли удобно и безопасно его брать.",
-        "Один и тот же кран работает по-разному с разными грузами."
-    ) | Out-Null
-    Add-RouteCard -Slide $slides["S011"] -Left 7.02 -Top 1.74 -Width 2.45 -Height 1.48 -Step "А" -Title "Габаритный" -Body "Обычный размер, понятные точки зацепки." -Accent $BROWN | Out-Null
-    Add-RouteCard -Slide $slides["S011"] -Left 9.68 -Top 1.74 -Width 2.45 -Height 1.48 -Step "Б" -Title "Длинномерный" -Body "Нужен контроль баланса и раскачивания." -Accent $BLUE | Out-Null
-    Add-RouteCard -Slide $slides["S011"] -Left 7.02 -Top 3.46 -Width 2.45 -Height 1.48 -Step "В" -Title "Листовой" -Body "Важно не повредить кромки и не сорвать строп." -Accent $GREEN | Out-Null
-    Add-RouteCard -Slide $slides["S011"] -Left 9.68 -Top 3.46 -Width 2.45 -Height 1.48 -Step "Г" -Title "Железобетон" -Body "Критичны масса, опоры и схема зацепки." -Accent $RED | Out-Null
+    $s011Lead = Add-TextBox -Slide $slides["S011"] -Left 0.82 -Top 1.70 -Width 11.42 -Height 0.36
+    Set-TextShape -Shape $s011Lead -Text "Основные категории грузов, с которыми дальше работаем в подтеме." -FontSize 16 -Color $TEXT
+    $s011CardP01 = Add-RouteCard -Slide $slides["S011"] -Left 0.82 -Top 2.20 -Width 2.70 -Height 1.66 -Step "А" -Title "Габаритные" -Body "Обычные грузы с понятными размерами." -Accent $BROWN
+    $s011CardP02 = Add-RouteCard -Slide $slides["S011"] -Left 3.74 -Top 2.20 -Width 2.70 -Height 1.66 -Step "Б" -Title "Длинномерные" -Body "Требуют контроля баланса и вылета." -Accent $BLUE
+    $s011CardP03 = Add-RouteCard -Slide $slides["S011"] -Left 6.66 -Top 2.20 -Width 2.70 -Height 1.66 -Step "В" -Title "Штучные нештабелируемые" -Body "Отдельные грузы без устойчивой укладки." -Accent $GREEN
+    $s011CardP04 = Add-RouteCard -Slide $slides["S011"] -Left 9.58 -Top 2.20 -Width 2.70 -Height 1.66 -Step "Г" -Title "Штучные штабелируемые" -Body "Можно укладывать в ярусы." -Accent $RED
+    $s011CardP05 = Add-RouteCard -Slide $slides["S011"] -Left 0.82 -Top 4.10 -Width 2.70 -Height 1.66 -Step "Д" -Title "Насыпные" -Body "Сыпучие материалы." -Accent $OCHRE
+    $s011CardP06 = Add-RouteCard -Slide $slides["S011"] -Left 3.74 -Top 4.10 -Width 2.70 -Height 1.66 -Step "Е" -Title "Полужидкие и пластичные" -Body "Густые смеси и пластичные массы." -Accent $STEEL
+    $s011CardP07 = Add-RouteCard -Slide $slides["S011"] -Left 6.66 -Top 4.10 -Width 2.70 -Height 1.66 -Step "Ж" -Title "Жидкие" -Body "Перевозятся в емкостях." -Accent $BLUE
+    $s011CardP08 = Add-RouteCard -Slide $slides["S011"] -Left 9.58 -Top 4.10 -Width 2.70 -Height 1.66 -Step "З" -Title "Газообразные" -Body "Баллоны и сосуды под давлением." -Accent $GREEN
 
     $slides["S012"] = New-ThemeSlide -Presentation $presentation -Code "S012" -Title "Ключевые факторы груза" -Subtitle "Что влияет на устойчивость и выбор схемы"
     Add-BulletPanel -Slide $slides["S012"] -Left 0.82 -Top 1.66 -Width 5.74 -Height 4.80 -Title "Факторы, которые нельзя пропустить" -Lines @(
@@ -1030,6 +1030,14 @@ try {
     $slides["S008-P03"] = New-CraneConstructionSlide -Presentation $presentation -Code "S008-P03" -BackTarget $slides["S008"] -HookTarget $slides["S008-P03-PP02"] -HookAssemblyTarget $slides["S008-P03-PP01"]
     Set-SlideJump -Shape $slides["S008-P03-PP01"].Shapes.Item($slides["S008-P03-PP01"].Shapes.Count) -TargetSlide $slides["S008-P03"]
     Set-SlideJump -Shape $slides["S008-P03-PP02"].Shapes.Item($slides["S008-P03-PP02"].Shapes.Count) -TargetSlide $slides["S008-P03"]
+    $slides["S011-P01"] = New-DetailSlide -Presentation $presentation -Code "S011-P01" -Title "Габаритные" -Lead "Подвал к блоку о габаритных грузах." -BackTarget $slides["S011"]
+    $slides["S011-P02"] = New-DetailSlide -Presentation $presentation -Code "S011-P02" -Title "Длинномерные" -Lead "Подвал к блоку о длинномерных грузах." -BackTarget $slides["S011"]
+    $slides["S011-P03"] = New-DetailSlide -Presentation $presentation -Code "S011-P03" -Title "Штучные нештабелируемые" -Lead "Подвал к блоку о штучных нештабелируемых грузах." -BackTarget $slides["S011"]
+    $slides["S011-P04"] = New-DetailSlide -Presentation $presentation -Code "S011-P04" -Title "Штучные штабелируемые" -Lead "Подвал к блоку о штучных штабелируемых грузах." -BackTarget $slides["S011"]
+    $slides["S011-P05"] = New-DetailSlide -Presentation $presentation -Code "S011-P05" -Title "Насыпные" -Lead "Подвал к блоку о насыпных грузах." -BackTarget $slides["S011"]
+    $slides["S011-P06"] = New-DetailSlide -Presentation $presentation -Code "S011-P06" -Title "Полужидкие и пластичные" -Lead "Подвал к блоку о полужидких и пластичных грузах." -BackTarget $slides["S011"]
+    $slides["S011-P07"] = New-DetailSlide -Presentation $presentation -Code "S011-P07" -Title "Жидкие" -Lead "Подвал к блоку о жидких грузах." -BackTarget $slides["S011"]
+    $slides["S011-P08"] = New-DetailSlide -Presentation $presentation -Code "S011-P08" -Title "Газообразные" -Lead "Подвал к блоку о газообразных грузах." -BackTarget $slides["S011"]
 
     $slides["S008-P01"].MoveTo(20)
     $slides["S008-P01-PP01"].MoveTo(21)
@@ -1037,6 +1045,14 @@ try {
     $slides["S008-P03"].MoveTo(23)
     $slides["S008-P03-PP01"].MoveTo(24)
     $slides["S008-P03-PP02"].MoveTo(25)
+    $slides["S011-P01"].MoveTo(26)
+    $slides["S011-P02"].MoveTo(27)
+    $slides["S011-P03"].MoveTo(28)
+    $slides["S011-P04"].MoveTo(29)
+    $slides["S011-P05"].MoveTo(30)
+    $slides["S011-P06"].MoveTo(31)
+    $slides["S011-P07"].MoveTo(32)
+    $slides["S011-P08"].MoveTo(33)
 
     $linearCodes = @("S008", "S009", "S010", "S011", "S012", "S013", "S014", "S015", "S016", "S017", "S018", "S019", "S020", "S021")
     for ($i = 0; $i -lt $linearCodes.Count; $i++) {
@@ -1073,6 +1089,14 @@ try {
     Set-SlideJump -Shape $s008CardP01 -TargetSlide $slides["S008-P01"]
     Set-SlideJump -Shape $s008CardP02 -TargetSlide $slides["S008-P02"]
     Set-SlideJump -Shape $s008CardP03 -TargetSlide $slides["S008-P03"]
+    Set-SlideJump -Shape $s011CardP01 -TargetSlide $slides["S011-P01"]
+    Set-SlideJump -Shape $s011CardP02 -TargetSlide $slides["S011-P02"]
+    Set-SlideJump -Shape $s011CardP03 -TargetSlide $slides["S011-P03"]
+    Set-SlideJump -Shape $s011CardP04 -TargetSlide $slides["S011-P04"]
+    Set-SlideJump -Shape $s011CardP05 -TargetSlide $slides["S011-P05"]
+    Set-SlideJump -Shape $s011CardP06 -TargetSlide $slides["S011-P06"]
+    Set-SlideJump -Shape $s011CardP07 -TargetSlide $slides["S011-P07"]
+    Set-SlideJump -Shape $s011CardP08 -TargetSlide $slides["S011-P08"]
 
     $presentation.Save()
 }
