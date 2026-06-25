@@ -780,7 +780,7 @@ $OCHRE = RgbValue 207 141 62
 $workspaceRoot = (Resolve-Path (Join-Path $scriptDir "..\..\..\..")).Path
 $livePreviewDir = Join-Path $workspaceRoot "presentations\ispring-course\module-01-stropovka-gruzov\live-preview"
 $sourcePath = Join-Path $livePreviewDir "S001-S007_live_preview_working_2026-06-24_v32.pptx"
-$outputPath = Join-Path $livePreviewDir "S001-S021_live_preview_working_2026-06-25_v29.pptx"
+$outputPath = Join-Path $livePreviewDir "S001-S021_live_preview_working_2026-06-25_v33.pptx"
 
 $assetRoot = Join-Path $workspaceRoot "assets\course-media\module-01-stropovka-gruzov\diagrams\error-analysis"
 $imageMap = @{
@@ -809,7 +809,7 @@ try {
     $substDrive = Get-FreeSubstDrive
     & subst $substDrive $workspaceRoot | Out-Null
     $aliasRoot = $substDrive
-    $outputAlias = Join-Path $aliasRoot "presentations\ispring-course\module-01-stropovka-gruzov\live-preview\S001-S021_live_preview_working_2026-06-25_v29.pptx"
+    $outputAlias = Join-Path $aliasRoot "presentations\ispring-course\module-01-stropovka-gruzov\live-preview\S001-S021_live_preview_working_2026-06-25_v33.pptx"
     $craneImageRoot = Join-Path $aliasRoot "assets\course-media\module-01-stropovka-gruzov\images\cranes"
     $visualBankRoot = Join-Path $aliasRoot "assets\reference_visuals\visual-bank\images"
     $script:HookSchemeImagePath = Join-Path $visualBankRoot "VIS-0020_hook-safety-diagram-restored_s008-p03-pp02.png"
@@ -1030,29 +1030,12 @@ try {
     $slides["S008-P03"] = New-CraneConstructionSlide -Presentation $presentation -Code "S008-P03" -BackTarget $slides["S008"] -HookTarget $slides["S008-P03-PP02"] -HookAssemblyTarget $slides["S008-P03-PP01"]
     Set-SlideJump -Shape $slides["S008-P03-PP01"].Shapes.Item($slides["S008-P03-PP01"].Shapes.Count) -TargetSlide $slides["S008-P03"]
     Set-SlideJump -Shape $slides["S008-P03-PP02"].Shapes.Item($slides["S008-P03-PP02"].Shapes.Count) -TargetSlide $slides["S008-P03"]
-    $slides["S011-P01"] = New-DetailSlide -Presentation $presentation -Code "S011-P01" -Title "Габаритные" -Lead "Подвал к блоку о габаритных грузах." -BackTarget $slides["S011"]
-    $slides["S011-P02"] = New-DetailSlide -Presentation $presentation -Code "S011-P02" -Title "Длинномерные" -Lead "Подвал к блоку о длинномерных грузах." -BackTarget $slides["S011"]
-    $slides["S011-P03"] = New-DetailSlide -Presentation $presentation -Code "S011-P03" -Title "Штучные нештабелируемые" -Lead "Подвал к блоку о штучных нештабелируемых грузах." -BackTarget $slides["S011"]
-    $slides["S011-P04"] = New-DetailSlide -Presentation $presentation -Code "S011-P04" -Title "Штучные штабелируемые" -Lead "Подвал к блоку о штучных штабелируемых грузах." -BackTarget $slides["S011"]
-    $slides["S011-P05"] = New-DetailSlide -Presentation $presentation -Code "S011-P05" -Title "Насыпные" -Lead "Подвал к блоку о насыпных грузах." -BackTarget $slides["S011"]
-    $slides["S011-P06"] = New-DetailSlide -Presentation $presentation -Code "S011-P06" -Title "Полужидкие и пластичные" -Lead "Подвал к блоку о полужидких и пластичных грузах." -BackTarget $slides["S011"]
-    $slides["S011-P07"] = New-DetailSlide -Presentation $presentation -Code "S011-P07" -Title "Жидкие" -Lead "Подвал к блоку о жидких грузах." -BackTarget $slides["S011"]
-    $slides["S011-P08"] = New-DetailSlide -Presentation $presentation -Code "S011-P08" -Title "Газообразные" -Lead "Подвал к блоку о газообразных грузах." -BackTarget $slides["S011"]
-
     $slides["S008-P01"].MoveTo(20)
     $slides["S008-P01-PP01"].MoveTo(21)
     $slides["S008-P02"].MoveTo(22)
     $slides["S008-P03"].MoveTo(23)
     $slides["S008-P03-PP01"].MoveTo(24)
     $slides["S008-P03-PP02"].MoveTo(25)
-    $slides["S011-P01"].MoveTo(26)
-    $slides["S011-P02"].MoveTo(27)
-    $slides["S011-P03"].MoveTo(28)
-    $slides["S011-P04"].MoveTo(29)
-    $slides["S011-P05"].MoveTo(30)
-    $slides["S011-P06"].MoveTo(31)
-    $slides["S011-P07"].MoveTo(32)
-    $slides["S011-P08"].MoveTo(33)
 
     $linearCodes = @("S008", "S009", "S010", "S011", "S012", "S013", "S014", "S015", "S016", "S017", "S018", "S019", "S020", "S021")
     for ($i = 0; $i -lt $linearCodes.Count; $i++) {
@@ -1089,15 +1072,6 @@ try {
     Set-SlideJump -Shape $s008CardP01 -TargetSlide $slides["S008-P01"]
     Set-SlideJump -Shape $s008CardP02 -TargetSlide $slides["S008-P02"]
     Set-SlideJump -Shape $s008CardP03 -TargetSlide $slides["S008-P03"]
-    Set-SlideJump -Shape $s011CardP01 -TargetSlide $slides["S011-P01"]
-    Set-SlideJump -Shape $s011CardP02 -TargetSlide $slides["S011-P02"]
-    Set-SlideJump -Shape $s011CardP03 -TargetSlide $slides["S011-P03"]
-    Set-SlideJump -Shape $s011CardP04 -TargetSlide $slides["S011-P04"]
-    Set-SlideJump -Shape $s011CardP05 -TargetSlide $slides["S011-P05"]
-    Set-SlideJump -Shape $s011CardP06 -TargetSlide $slides["S011-P06"]
-    Set-SlideJump -Shape $s011CardP07 -TargetSlide $slides["S011-P07"]
-    Set-SlideJump -Shape $s011CardP08 -TargetSlide $slides["S011-P08"]
-
     $presentation.Save()
 }
 finally {
