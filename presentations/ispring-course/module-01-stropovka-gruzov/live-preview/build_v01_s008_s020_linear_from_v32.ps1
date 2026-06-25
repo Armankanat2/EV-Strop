@@ -647,7 +647,8 @@ function New-CraneConstructionSlide {
         [Parameter(Mandatory = $true)] $Presentation,
         [Parameter(Mandatory = $true)] [string] $Code,
         [Parameter(Mandatory = $true)] $BackTarget,
-        $HookTarget = $null
+        $HookTarget = $null,
+        $HookAssemblyTarget = $null
     )
 
     $slide = New-ThemeSlide -Presentation $Presentation -Code $Code -Title "Конструктивные особенности" -Subtitle "Подвал к слайду S008"
@@ -672,11 +673,43 @@ function New-CraneConstructionSlide {
 
     if ($HookTarget) {
         Set-SlideJump -Shape $hookBtn -TargetSlide $HookTarget
-        Set-SlideJump -Shape $hookAssemblyBtn -TargetSlide $HookTarget
+    }
+    if ($HookAssemblyTarget) {
+        Set-SlideJump -Shape $hookAssemblyBtn -TargetSlide $HookAssemblyTarget
     }
 
     $backBtn = Add-Button -Slide $slide -Left 0.72 -Top 6.62 -Width 2.58 -Height 0.50 -Text "Вернуться к S008" -FillColor $script:STEEL -FontSize 16
     Set-SlideJump -Shape $backBtn -TargetSlide $BackTarget
+    return $slide
+}
+
+function New-HookAssemblySlide {
+    param(
+        [Parameter(Mandatory = $true)] $Presentation,
+        [Parameter(Mandatory = $true)] [string] $Code,
+        $BackTarget = $null
+    )
+
+    $slide = New-ThemeSlide -Presentation $Presentation -Code $Code -Title "Крюк и крюковая подвеска" -Subtitle "Поподвал к слайду S008-P03"
+
+    Add-Panel -Slide $slide -Left 0.82 -Top 1.64 -Width 5.44 -Height 4.66 -Title "Схема крюковой подвески" -AccentColor $script:BLUE -HeaderWidth 3.10 | Out-Null
+    $schemeFrame = Add-Box -Slide $slide -ShapeType ([Microsoft.Office.Core.MsoAutoShapeType]::msoShapeRoundedRectangle) `
+        -Left 1.08 -Top 2.34 -Width 4.92 -Height 3.70 -FillColor $script:WHITE -LineColor $script:LINE
+    $schemeFrame.Line.Weight = 1.0
+    Add-FitPicture -Slide $slide -ImagePath $script:HookAssemblySchemeImagePath -Left 1.18 -Top 2.42 -Width 4.72 -Height 3.52 | Out-Null
+
+    Add-Panel -Slide $slide -Left 6.48 -Top 1.64 -Width 5.80 -Height 4.66 -Title "Назначение крюковой подвески" -AccentColor $script:GREEN -HeaderWidth 3.54 | Out-Null
+    $purposeText = Add-TextBox -Slide $slide -Left 6.84 -Top 2.72 -Width 5.06 -Height 3.18
+    Set-TermDefinitionBlock -Shape $purposeText -Items @(
+        @{ Term = "Соединение"; Definition = "связывает стальной канат крана со стропами груза." },
+        @{ Term = "Выигрыш в силе"; Definition = "за счет встроенных блоков (полиспаста) снижает нагрузку на канат и лебедку при подъеме." },
+        @{ Term = "Натяжение канатов"; Definition = "своей массой натягивает пустой канат, не давая ему запутаться на барабане." }
+    ) -FontSize 16 -TextColor $script:TEXT -TermColor $script:GREEN
+
+    $backBtn = Add-Button -Slide $slide -Left 0.72 -Top 6.62 -Width 2.28 -Height 0.50 -Text "Назад" -FillColor $script:STEEL -FontSize 16
+    if ($BackTarget) {
+        Set-SlideJump -Shape $backBtn -TargetSlide $BackTarget
+    }
     return $slide
 }
 
@@ -747,7 +780,7 @@ $OCHRE = RgbValue 207 141 62
 $workspaceRoot = (Resolve-Path (Join-Path $scriptDir "..\..\..\..")).Path
 $livePreviewDir = Join-Path $workspaceRoot "presentations\ispring-course\module-01-stropovka-gruzov\live-preview"
 $sourcePath = Join-Path $livePreviewDir "S001-S007_live_preview_working_2026-06-24_v32.pptx"
-$outputPath = Join-Path $livePreviewDir "S001-S021_live_preview_working_2026-06-25_v22.pptx"
+$outputPath = Join-Path $livePreviewDir "S001-S021_live_preview_working_2026-06-25_v25.pptx"
 
 $assetRoot = Join-Path $workspaceRoot "assets\course-media\module-01-stropovka-gruzov\diagrams\error-analysis"
 $imageMap = @{
@@ -776,11 +809,12 @@ try {
     $substDrive = Get-FreeSubstDrive
     & subst $substDrive $workspaceRoot | Out-Null
     $aliasRoot = $substDrive
-    $outputAlias = Join-Path $aliasRoot "presentations\ispring-course\module-01-stropovka-gruzov\live-preview\S001-S021_live_preview_working_2026-06-25_v22.pptx"
+    $outputAlias = Join-Path $aliasRoot "presentations\ispring-course\module-01-stropovka-gruzov\live-preview\S001-S021_live_preview_working_2026-06-25_v25.pptx"
     $craneImageRoot = Join-Path $aliasRoot "assets\course-media\module-01-stropovka-gruzov\images\cranes"
     $visualBankRoot = Join-Path $aliasRoot "assets\reference_visuals\visual-bank\images"
     $script:HookSchemeImagePath = Join-Path $visualBankRoot "VIS-0020_hook-safety-diagram-restored_s008-p03-pp02.png"
     $script:HookRejectImagePath = Join-Path $visualBankRoot "VIS-0021_hook-defects-callout-numbered_s008-p03-pp02.png"
+    $script:HookAssemblySchemeImagePath = Join-Path $visualBankRoot "схема крюкойо подвески.png"
 
     $pp = New-Object -ComObject PowerPoint.Application
     $pp.Visible = -1
@@ -991,15 +1025,18 @@ try {
     }
     Set-SlideJump -Shape $slides["S008-P01-PP01"].Shapes.Item($slides["S008-P01-PP01"].Shapes.Count) -TargetSlide $slides["S008-P01"]
     $slides["S008-P02"] = New-CraneParametersSlide -Presentation $presentation -Code "S008-P02" -BackTarget $slides["S008"]
+    $slides["S008-P03-PP01"] = New-HookAssemblySlide -Presentation $presentation -Code "S008-P03-PP01" -BackTarget $null
     $slides["S008-P03-PP02"] = New-HookDetailSlide -Presentation $presentation -Code "S008-P03-PP02" -BackTarget $null
-    $slides["S008-P03"] = New-CraneConstructionSlide -Presentation $presentation -Code "S008-P03" -BackTarget $slides["S008"] -HookTarget $slides["S008-P03-PP02"]
+    $slides["S008-P03"] = New-CraneConstructionSlide -Presentation $presentation -Code "S008-P03" -BackTarget $slides["S008"] -HookTarget $slides["S008-P03-PP02"] -HookAssemblyTarget $slides["S008-P03-PP01"]
+    Set-SlideJump -Shape $slides["S008-P03-PP01"].Shapes.Item($slides["S008-P03-PP01"].Shapes.Count) -TargetSlide $slides["S008-P03"]
     Set-SlideJump -Shape $slides["S008-P03-PP02"].Shapes.Item($slides["S008-P03-PP02"].Shapes.Count) -TargetSlide $slides["S008-P03"]
 
     $slides["S008-P01"].MoveTo(20)
     $slides["S008-P01-PP01"].MoveTo(21)
     $slides["S008-P02"].MoveTo(22)
     $slides["S008-P03"].MoveTo(23)
-    $slides["S008-P03-PP02"].MoveTo(24)
+    $slides["S008-P03-PP01"].MoveTo(24)
+    $slides["S008-P03-PP02"].MoveTo(25)
 
     $linearCodes = @("S008", "S009", "S010", "S011", "S012", "S013", "S014", "S015", "S016", "S017", "S018", "S019", "S020", "S021")
     for ($i = 0; $i -lt $linearCodes.Count; $i++) {
