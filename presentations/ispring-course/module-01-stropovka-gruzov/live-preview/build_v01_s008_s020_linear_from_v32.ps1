@@ -843,7 +843,7 @@ $OCHRE = RgbValue 207 141 62
 $workspaceRoot = (Resolve-Path (Join-Path $scriptDir "..\..\..\..")).Path
 $livePreviewDir = Join-Path $workspaceRoot "presentations\ispring-course\module-01-stropovka-gruzov\live-preview"
 $sourcePath = Join-Path $livePreviewDir "S001-S007_live_preview_working_2026-06-24_v32.pptx"
-$outputPath = Join-Path $livePreviewDir "S001-S021_live_preview_working_2026-06-25_v33.pptx"
+$outputPath = Join-Path $livePreviewDir "S001-S021_live_preview_working_2026-06-25_v38.pptx"
 
 $assetRoot = Join-Path $workspaceRoot "assets\course-media\module-01-stropovka-gruzov\diagrams\error-analysis"
 $imageMap = @{
@@ -872,7 +872,7 @@ try {
     $substDrive = Get-FreeSubstDrive
     & subst $substDrive $workspaceRoot | Out-Null
     $aliasRoot = $substDrive
-    $outputAlias = Join-Path $aliasRoot "presentations\ispring-course\module-01-stropovka-gruzov\live-preview\S001-S021_live_preview_working_2026-06-25_v33.pptx"
+    $outputAlias = Join-Path $aliasRoot "presentations\ispring-course\module-01-stropovka-gruzov\live-preview\S001-S021_live_preview_working_2026-06-25_v38.pptx"
     $craneImageRoot = Join-Path $aliasRoot "assets\course-media\module-01-stropovka-gruzov\images\cranes"
     $visualBankRoot = Join-Path $aliasRoot "assets\reference_visuals\visual-bank\images"
     $script:HookSchemeImagePath = Join-Path $visualBankRoot "VIS-0020_hook-safety-diagram-restored_s008-p03-pp02.png"
@@ -967,10 +967,9 @@ try {
         "Маркировка и знаки",
         "Неизвестная масса - стоп"
     ) | Out-Null
-    $s011Image = Join-Path (Join-Path $aliasRoot "assets\course-media\module-01-stropovka-gruzov\diagrams\error-analysis") $imageMap["S011"]
-    Add-ImagePanel -Slide $slides["S012"] -Left 6.94 -Top 1.66 -Width 5.48 -Height 4.80 -Title "Опорная схема" `
-        -ImagePath $s011Image `
-        -Caption "Готовый visual asset уже показывает главный риск: смещенный центр тяжести сразу меняет поведение груза."
+    Add-Panel -Slide $slides["S012"] -Left 6.94 -Top 1.66 -Width 5.48 -Height 4.80 -Title "Задача для ролика" -AccentColor $BLUE -HeaderWidth 2.68 | Out-Null
+    $s012Task = Add-TextBox -Slide $slides["S012"] -Left 7.28 -Top 2.28 -Width 4.82 -Height 3.72
+    Set-TextShape -Shape $s012Task -Text "Собрать видеоролик, в котором озвучить: Масса груза, габариты, центр тяжести, маркировки и знаки, неизвестная масса." -FontSize 19 -Color $TEXT
 
     $slides["S013"] = New-ThemeSlide -Presentation $presentation -Code "S013" -Title "Стропы и приспособления" -Subtitle "Средство выбирают под задачу, а не на глаз"
     Add-BulletPanel -Slide $slides["S013"] -Left 0.82 -Top 1.66 -Width 3.00 -Height 4.80 -Title "Что нужно различать" -Lines @(
