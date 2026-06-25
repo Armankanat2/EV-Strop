@@ -617,7 +617,8 @@ function New-CargoCategoryDetailSlide {
         [Parameter(Mandatory = $true)] [string] $ImagePath,
         [Parameter(Mandatory = $true)] $BackTarget,
         [int] $AccentColor = 0,
-        [string] $BodyText = ""
+        [string] $BodyText = "",
+        [int] $BodyFontSize = 18
     )
 
     if ($AccentColor -eq 0) {
@@ -640,7 +641,7 @@ function New-CargoCategoryDetailSlide {
         ) -FontSize 18 -TextColor $script:TEXT -TermColor $AccentColor
     }
     else {
-        Set-TextShape -Shape $body -Text $BodyText -FontSize 18 -Color $script:TEXT
+        Set-TextShape -Shape $body -Text $BodyText -FontSize $BodyFontSize -Color $script:TEXT
     }
 
     $note = Add-TextBox -Slide $slide -Left 5.64 -Top 5.18 -Width 6.18 -Height 0.64
@@ -880,6 +881,11 @@ try {
     $script:S011CategoryImagePath = Join-Path $aliasRoot "assets\course-media\module-01-stropovka-gruzov\images\S011_long-cargo-reference.png"
     $script:S011LongCargoImagePath = Join-Path $aliasRoot "assets\course-media\module-01-stropovka-gruzov\images\S011_long-cargo-reference-v2.png"
     $script:S011PieceCargoImagePath = Join-Path $aliasRoot "assets\course-media\module-01-stropovka-gruzov\images\S011_piece-cargo-reference.png"
+    $script:S011StackableCargoImagePath = Join-Path $aliasRoot "assets\course-media\module-01-stropovka-gruzov\images\S011_stackable-cargo-reference.png"
+    $script:S011BulkCargoImagePath = Join-Path $aliasRoot "assets\course-media\module-01-stropovka-gruzov\images\S011_bulk-cargo-reference.png"
+    $script:S011SemiLiquidCargoImagePath = Join-Path $aliasRoot "assets\course-media\module-01-stropovka-gruzov\images\S011_semi-liquid-cargo-reference.jfif"
+    $script:S011LiquidCargoImagePath = Join-Path $aliasRoot "assets\course-media\module-01-stropovka-gruzov\images\S011_liquid-cargo-reference.png"
+    $script:S011GasCargoImagePath = Join-Path $aliasRoot "assets\course-media\module-01-stropovka-gruzov\images\S011_gas-cargo-reference.png"
 
     $pp = New-Object -ComObject PowerPoint.Application
     $pp.Visible = -1
@@ -947,6 +953,11 @@ try {
     $s011HotspotP01 = Add-Hotspot -Slide $slides["S011"] -Left 0.82 -Top 2.20 -Width 2.70 -Height 1.66
     $s011HotspotP02 = Add-Hotspot -Slide $slides["S011"] -Left 3.74 -Top 2.20 -Width 2.70 -Height 1.66
     $s011HotspotP03 = Add-Hotspot -Slide $slides["S011"] -Left 6.66 -Top 2.20 -Width 2.70 -Height 1.66
+    $s011HotspotP04 = Add-Hotspot -Slide $slides["S011"] -Left 9.58 -Top 2.20 -Width 2.70 -Height 1.66
+    $s011HotspotP05 = Add-Hotspot -Slide $slides["S011"] -Left 0.82 -Top 4.10 -Width 2.70 -Height 1.66
+    $s011HotspotP06 = Add-Hotspot -Slide $slides["S011"] -Left 3.74 -Top 4.10 -Width 2.70 -Height 1.66
+    $s011HotspotP07 = Add-Hotspot -Slide $slides["S011"] -Left 6.66 -Top 4.10 -Width 2.70 -Height 1.66
+    $s011HotspotP08 = Add-Hotspot -Slide $slides["S011"] -Left 9.58 -Top 4.10 -Width 2.70 -Height 1.66
 
     $slides["S012"] = New-ThemeSlide -Presentation $presentation -Code "S012" -Title "Ключевые факторы груза" -Subtitle "Что влияет на устойчивость и выбор схемы"
     Add-BulletPanel -Slide $slides["S012"] -Left 0.82 -Top 1.66 -Width 5.74 -Height 4.80 -Title "Факторы, которые нельзя пропустить" -Lines @(
@@ -1099,6 +1110,11 @@ try {
     $slides["S011-P01"] = New-CargoCategoryDetailSlide -Presentation $presentation -Code "S011-P01" -Title "Габаритные грузы" -ItemTitle "Габаритный груз" -Definition "это груз, размеры которого не превышают допустимые нормы для перевозки на стандартном транспорте и не создают помех при движении по дорогам общего пользования. Для такого груза не нужны специальные разрешения или сопровождение." -ImagePath $script:S011CategoryImagePath -BackTarget $slides["S011"] -AccentColor $BROWN
     $slides["S011-P02"] = New-CargoCategoryDetailSlide -Presentation $presentation -Code "S011-P02" -Title "Длинномерные грузы" -ItemTitle "Длинномерный груз" -Definition "это груз, длина которого заметно превышает его ширину и высоту. При подъеме такой груз особенно чувствителен к перекосу, раскачиванию и смещению центра тяжести, поэтому требует устойчивой схемы строповки, правильной расстановки точек зацепки и постоянного контроля баланса." -ImagePath $script:S011LongCargoImagePath -BackTarget $slides["S011"] -AccentColor $BLUE
     $slides["S011-P03"] = New-CargoCategoryDetailSlide -Presentation $presentation -Code "S011-P03" -Title "Штучные нештабелируемые грузы" -ItemTitle "Штучный нештабелируемый груз" -Definition "это отдельный груз, который нельзя безопасно укладывать в ярусы или устойчиво складировать без специальной оснастки. Для него особенно важно исключить перекос, случайное смещение и потерю устойчивости во время подъема и перемещения." -ImagePath $script:S011PieceCargoImagePath -BackTarget $slides["S011"] -AccentColor $GREEN -BodyText "• Штучные нештабелируемые грузы — это отдельные крупногабаритные, тяжелые или нестандартные по форме предметы (оборудование, станки, металлоконструкции), которые из-за сложной геометрии или хрупкости нельзя ставить друг на друга в несколько ярусов."
+    $slides["S011-P04"] = New-CargoCategoryDetailSlide -Presentation $presentation -Code "S011-P04" -Title "Штучные штабелируемые грузы" -ItemTitle "Штучный штабелируемый груз" -Definition "это отдельные грузы, которые допускается устойчиво укладывать в несколько ярусов при хранении и перемещении. При строповке для них важно сохранить устойчивость штабеля, не допустить смещения верхних рядов и учитывать, как распределяется масса по всей пачке или укладке." -ImagePath $script:S011StackableCargoImagePath -BackTarget $slides["S011"] -AccentColor $RED -BodyText "Штучные штабелируемые грузы — это одинаковые по форме предметы (ящики, контейнеры, поддоны с кирпичом, трубы, плиты), которые имеют ровные грани или специальные пазы.`r`n`r`nИх главная особенность — их можно безопасно складывать друг на друга в несколько ярусов (в штабели) для компактного хранения." -BodyFontSize 16
+    $slides["S011-P05"] = New-CargoCategoryDetailSlide -Presentation $presentation -Code "S011-P05" -Title "Насыпные грузы" -ItemTitle "Насыпной груз" -Definition "это груз из множества мелких однородных частиц, который не сохраняет собственной формы и свободно пересыпается. При его подъеме и перемещении важно учитывать текучесть, возможность смещения массы внутри тары и риск просыпания." -ImagePath $script:S011BulkCargoImagePath -BackTarget $slides["S011"] -AccentColor $OCHRE -BodyText "• Насыпные грузы — это однородные сыпучие материалы (песок, щебень, уголь, зерно), которые перевозятся и хранятся без упаковки, навалом. Их перемещают не стропами, а специальными грузозахватными устройствами — грейферами и тарой." -BodyFontSize 16
+    $slides["S011-P06"] = New-CargoCategoryDetailSlide -Presentation $presentation -Code "S011-P06" -Title "Полужидкие и пластичные грузы" -ItemTitle "Полужидкий или пластичный груз" -Definition "это вязкие, густые или легко деформируемые материалы, которые частично сохраняют форму, но под нагрузкой могут растекаться, сминаться или смещаться внутри тары. При перемещении для них особенно важно учитывать устойчивость упаковки, герметичность емкости и поведение массы при качке." -ImagePath $script:S011SemiLiquidCargoImagePath -BackTarget $slides["S011"] -AccentColor $STEEL -BodyText "Полужидкие и пластичные грузы — это вязкие массы (бетон, строительный раствор, битум, мастика), которые из-за своей текучести не имеют постоянной формы. Для их перемещения краном стропальщики используют специальную тару — бадьи или бункеры." -BodyFontSize 16
+    $slides["S011-P07"] = New-CargoCategoryDetailSlide -Presentation $presentation -Code "S011-P07" -Title "Жидкие грузы" -ItemTitle "Жидкий груз" -Definition "это вещества, которые полностью принимают форму емкости и при перемещении могут переливаться, создавать гидроудары и смещать центр тяжести. Для безопасного подъема важно использовать герметичную тару и учитывать колебание жидкости внутри сосуда." -ImagePath $script:S011LiquidCargoImagePath -BackTarget $slides["S011"] -AccentColor $BLUE -BodyText "Жидкие грузы — это текучие жидкости (вода, топливо, кислоты, щелочи), которые перевозятся только в герметичной таре — бочках, цистернах или бутылях. Их главная опасность — при движении они колеблются, смещают центр тяжести и раскачивают кран, поэтому тару никогда не заливают до самого верха." -BodyFontSize 16
+    $slides["S011-P08"] = New-CargoCategoryDetailSlide -Presentation $presentation -Code "S011-P08" -Title "Газообразные грузы" -ItemTitle "Газообразный груз" -Definition "это газы, которые перевозятся и хранятся только в герметичных баллонах, сосудах или специальных емкостях под давлением. При их перемещении особенно важно исключить удары, перегрев, падение тары и любое нарушение герметичности." -ImagePath $script:S011GasCargoImagePath -BackTarget $slides["S011"] -AccentColor $GREEN -BodyText "Газообразные грузы — это газы (кислород, пропан, ацетилен, азот), которые сжаты под огромным давлением и перемещаются исключительно в специальных прочных баллонах или контейнерах." -BodyFontSize 16
     Set-SlideJump -Shape $slides["S008-P03-PP01"].Shapes.Item($slides["S008-P03-PP01"].Shapes.Count) -TargetSlide $slides["S008-P03"]
     Set-SlideJump -Shape $slides["S008-P03-PP02"].Shapes.Item($slides["S008-P03-PP02"].Shapes.Count) -TargetSlide $slides["S008-P03"]
     $slides["S008-P01"].MoveTo(20)
@@ -1110,6 +1126,11 @@ try {
     $slides["S011-P01"].MoveTo(29)
     $slides["S011-P02"].MoveTo(30)
     $slides["S011-P03"].MoveTo(31)
+    $slides["S011-P04"].MoveTo(32)
+    $slides["S011-P05"].MoveTo(33)
+    $slides["S011-P06"].MoveTo(34)
+    $slides["S011-P07"].MoveTo(35)
+    $slides["S011-P08"].MoveTo(36)
 
     $linearCodes = @("S008", "S009", "S010", "S011", "S012", "S013", "S014", "S015", "S016", "S017", "S018", "S019", "S020", "S021")
     for ($i = 0; $i -lt $linearCodes.Count; $i++) {
@@ -1149,6 +1170,11 @@ try {
     Set-SlideJump -Shape $s011HotspotP01 -TargetSlide $slides["S011-P01"]
     Set-SlideJump -Shape $s011HotspotP02 -TargetSlide $slides["S011-P02"]
     Set-SlideJump -Shape $s011HotspotP03 -TargetSlide $slides["S011-P03"]
+    Set-SlideJump -Shape $s011HotspotP04 -TargetSlide $slides["S011-P04"]
+    Set-SlideJump -Shape $s011HotspotP05 -TargetSlide $slides["S011-P05"]
+    Set-SlideJump -Shape $s011HotspotP06 -TargetSlide $slides["S011-P06"]
+    Set-SlideJump -Shape $s011HotspotP07 -TargetSlide $slides["S011-P07"]
+    Set-SlideJump -Shape $s011HotspotP08 -TargetSlide $slides["S011-P08"]
     $presentation.Save()
 }
 finally {
