@@ -616,7 +616,8 @@ function New-CargoCategoryDetailSlide {
         [Parameter(Mandatory = $true)] [string] $Definition,
         [Parameter(Mandatory = $true)] [string] $ImagePath,
         [Parameter(Mandatory = $true)] $BackTarget,
-        [int] $AccentColor = 0
+        [int] $AccentColor = 0,
+        [string] $BodyText = ""
     )
 
     if ($AccentColor -eq 0) {
@@ -633,9 +634,14 @@ function New-CargoCategoryDetailSlide {
 
     Add-Panel -Slide $slide -Left 5.30 -Top 1.66 -Width 6.98 -Height 4.80 -Title "Короткое пояснение" -AccentColor $AccentColor -HeaderWidth 3.18 | Out-Null
     $body = Add-TextBox -Slide $slide -Left 5.64 -Top 2.24 -Width 6.34 -Height 3.26
-    Set-TermDefinitionBlock -Shape $body -Items @(
-        @{ Term = $ItemTitle; Definition = $Definition }
-    ) -FontSize 18 -TextColor $script:TEXT -TermColor $AccentColor
+    if ([string]::IsNullOrWhiteSpace($BodyText)) {
+        Set-TermDefinitionBlock -Shape $body -Items @(
+            @{ Term = $ItemTitle; Definition = $Definition }
+        ) -FontSize 18 -TextColor $script:TEXT -TermColor $AccentColor
+    }
+    else {
+        Set-TextShape -Shape $body -Text $BodyText -FontSize 18 -Color $script:TEXT
+    }
 
     $note = Add-TextBox -Slide $slide -Left 5.64 -Top 5.18 -Width 6.18 -Height 0.64
     Set-Lines -Shape $note -Lines @(
@@ -872,6 +878,8 @@ try {
     $script:HookRejectImagePath = Join-Path $visualBankRoot "VIS-0021_hook-defects-callout-numbered_s008-p03-pp02.png"
     $script:HookAssemblySchemeImagePath = Join-Path $visualBankRoot "схема крюкойо подвески.png"
     $script:S011CategoryImagePath = Join-Path $aliasRoot "assets\course-media\module-01-stropovka-gruzov\images\S011_long-cargo-reference.png"
+    $script:S011LongCargoImagePath = Join-Path $aliasRoot "assets\course-media\module-01-stropovka-gruzov\images\S011_long-cargo-reference-v2.png"
+    $script:S011PieceCargoImagePath = Join-Path $aliasRoot "assets\course-media\module-01-stropovka-gruzov\images\S011_piece-cargo-reference.png"
 
     $pp = New-Object -ComObject PowerPoint.Application
     $pp.Visible = -1
@@ -938,6 +946,7 @@ try {
     $s011CardP08 = Add-RouteCard -Slide $slides["S011"] -Left 9.58 -Top 4.10 -Width 2.70 -Height 1.66 -Step "З" -Title "Газообразные" -Body "Баллоны и сосуды под давлением." -Accent $GREEN
     $s011HotspotP01 = Add-Hotspot -Slide $slides["S011"] -Left 0.82 -Top 2.20 -Width 2.70 -Height 1.66
     $s011HotspotP02 = Add-Hotspot -Slide $slides["S011"] -Left 3.74 -Top 2.20 -Width 2.70 -Height 1.66
+    $s011HotspotP03 = Add-Hotspot -Slide $slides["S011"] -Left 6.66 -Top 2.20 -Width 2.70 -Height 1.66
 
     $slides["S012"] = New-ThemeSlide -Presentation $presentation -Code "S012" -Title "Ключевые факторы груза" -Subtitle "Что влияет на устойчивость и выбор схемы"
     Add-BulletPanel -Slide $slides["S012"] -Left 0.82 -Top 1.66 -Width 5.74 -Height 4.80 -Title "Факторы, которые нельзя пропустить" -Lines @(
@@ -1088,7 +1097,8 @@ try {
     $slides["S008-P03-PP02"] = New-HookDetailSlide -Presentation $presentation -Code "S008-P03-PP02" -BackTarget $null
     $slides["S008-P03"] = New-CraneConstructionSlide -Presentation $presentation -Code "S008-P03" -BackTarget $slides["S008"] -HookTarget $slides["S008-P03-PP02"] -HookAssemblyTarget $slides["S008-P03-PP01"]
     $slides["S011-P01"] = New-CargoCategoryDetailSlide -Presentation $presentation -Code "S011-P01" -Title "Габаритные грузы" -ItemTitle "Габаритный груз" -Definition "это груз, размеры которого не превышают допустимые нормы для перевозки на стандартном транспорте и не создают помех при движении по дорогам общего пользования. Для такого груза не нужны специальные разрешения или сопровождение." -ImagePath $script:S011CategoryImagePath -BackTarget $slides["S011"] -AccentColor $BROWN
-    $slides["S011-P02"] = New-CargoCategoryDetailSlide -Presentation $presentation -Code "S011-P02" -Title "Длинномерные грузы" -ItemTitle "Длинномерный груз" -Definition "это груз, длина которого заметно превышает его ширину и высоту. При подъеме такой груз особенно чувствителен к перекосу, раскачиванию и смещению центра тяжести, поэтому требует устойчивой схемы строповки, правильной расстановки точек зацепки и постоянного контроля баланса." -ImagePath $script:S011CategoryImagePath -BackTarget $slides["S011"] -AccentColor $BLUE
+    $slides["S011-P02"] = New-CargoCategoryDetailSlide -Presentation $presentation -Code "S011-P02" -Title "Длинномерные грузы" -ItemTitle "Длинномерный груз" -Definition "это груз, длина которого заметно превышает его ширину и высоту. При подъеме такой груз особенно чувствителен к перекосу, раскачиванию и смещению центра тяжести, поэтому требует устойчивой схемы строповки, правильной расстановки точек зацепки и постоянного контроля баланса." -ImagePath $script:S011LongCargoImagePath -BackTarget $slides["S011"] -AccentColor $BLUE
+    $slides["S011-P03"] = New-CargoCategoryDetailSlide -Presentation $presentation -Code "S011-P03" -Title "Штучные нештабелируемые грузы" -ItemTitle "Штучный нештабелируемый груз" -Definition "это отдельный груз, который нельзя безопасно укладывать в ярусы или устойчиво складировать без специальной оснастки. Для него особенно важно исключить перекос, случайное смещение и потерю устойчивости во время подъема и перемещения." -ImagePath $script:S011PieceCargoImagePath -BackTarget $slides["S011"] -AccentColor $GREEN -BodyText "• Штучные нештабелируемые грузы — это отдельные крупногабаритные, тяжелые или нестандартные по форме предметы (оборудование, станки, металлоконструкции), которые из-за сложной геометрии или хрупкости нельзя ставить друг на друга в несколько ярусов."
     Set-SlideJump -Shape $slides["S008-P03-PP01"].Shapes.Item($slides["S008-P03-PP01"].Shapes.Count) -TargetSlide $slides["S008-P03"]
     Set-SlideJump -Shape $slides["S008-P03-PP02"].Shapes.Item($slides["S008-P03-PP02"].Shapes.Count) -TargetSlide $slides["S008-P03"]
     $slides["S008-P01"].MoveTo(20)
@@ -1099,6 +1109,7 @@ try {
     $slides["S008-P03-PP02"].MoveTo(25)
     $slides["S011-P01"].MoveTo(29)
     $slides["S011-P02"].MoveTo(30)
+    $slides["S011-P03"].MoveTo(31)
 
     $linearCodes = @("S008", "S009", "S010", "S011", "S012", "S013", "S014", "S015", "S016", "S017", "S018", "S019", "S020", "S021")
     for ($i = 0; $i -lt $linearCodes.Count; $i++) {
@@ -1137,6 +1148,7 @@ try {
     Set-SlideJump -Shape $s008CardP03 -TargetSlide $slides["S008-P03"]
     Set-SlideJump -Shape $s011HotspotP01 -TargetSlide $slides["S011-P01"]
     Set-SlideJump -Shape $s011HotspotP02 -TargetSlide $slides["S011-P02"]
+    Set-SlideJump -Shape $s011HotspotP03 -TargetSlide $slides["S011-P03"]
     $presentation.Save()
 }
 finally {
