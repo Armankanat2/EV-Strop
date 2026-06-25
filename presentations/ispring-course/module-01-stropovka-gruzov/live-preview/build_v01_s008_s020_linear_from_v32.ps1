@@ -111,6 +111,53 @@ function Set-Lines {
     $Shape.TextFrame.TextRange.ParagraphFormat.Alignment = $Align
 }
 
+function Set-TermDefinitionBlock {
+    param(
+        [Parameter(Mandatory = $true)] $Shape,
+        [Parameter(Mandatory = $true)] [object[]] $Items,
+        [double] $FontSize = 13,
+        [int] $TextColor = 0,
+        [int] $TermColor = 0
+    )
+
+    if ($TextColor -eq 0) {
+        $TextColor = $script:TEXT
+    }
+    if ($TermColor -eq 0) {
+        $TermColor = $script:BLUE
+    }
+
+    $lines = @()
+    foreach ($item in $Items) {
+        $lines += "$($item.Term) — $($item.Definition)"
+    }
+
+    $Shape.TextFrame.MarginLeft = 0
+    $Shape.TextFrame.MarginRight = 0
+    $Shape.TextFrame.MarginTop = 0
+    $Shape.TextFrame.MarginBottom = 0
+    $Shape.TextFrame.WordWrap = -1
+    $Shape.TextFrame.VerticalAnchor = 1
+    $Shape.TextFrame.TextRange.Text = ($lines -join "`r")
+    $Shape.TextFrame.TextRange.Font.Name = "Arial"
+    $Shape.TextFrame.TextRange.Font.Size = $FontSize
+    $Shape.TextFrame.TextRange.Font.Bold = 0
+    $Shape.TextFrame.TextRange.Font.Color.RGB = $TextColor
+    $Shape.TextFrame.TextRange.ParagraphFormat.Alignment = 1
+    $Shape.TextFrame.TextRange.ParagraphFormat.SpaceWithin = 1.0
+    $Shape.TextFrame.TextRange.ParagraphFormat.SpaceAfter = 2
+
+    $position = 1
+    foreach ($item in $Items) {
+        $termLength = $item.Term.Length
+        $definitionLength = $item.Definition.Length
+        $termRange = $Shape.TextFrame.TextRange.Characters($position, $termLength)
+        $termRange.Font.Bold = -1
+        $termRange.Font.Color.RGB = $TermColor
+        $position += $termLength + 3 + $definitionLength + 1
+    }
+}
+
 function Add-Button {
     param(
         [Parameter(Mandatory = $true)] $Slide,
@@ -177,7 +224,9 @@ function Add-Panel {
         [Parameter(Mandatory = $true)] [double] $Width,
         [Parameter(Mandatory = $true)] [double] $Height,
         [Parameter(Mandatory = $true)] [string] $Title,
-        [int] $AccentColor = 0
+        [int] $AccentColor = 0,
+        [double] $HeaderWidth = 2.36,
+        [int] $HeaderFontSize = 14
     )
 
     if ($AccentColor -eq 0) {
@@ -187,8 +236,8 @@ function Add-Panel {
     $panel = Add-Box -Slide $Slide -ShapeType ([Microsoft.Office.Core.MsoAutoShapeType]::msoShapeRoundedRectangle) `
         -Left $Left -Top $Top -Width $Width -Height $Height -FillColor $script:CARD -LineColor $script:LINE
     $head = Add-Box -Slide $Slide -ShapeType ([Microsoft.Office.Core.MsoAutoShapeType]::msoShapeRoundedRectangle) `
-        -Left ($Left + 0.16) -Top ($Top + 0.16) -Width 2.36 -Height 0.42 -FillColor $AccentColor -LineColor $AccentColor
-    Set-TextShape -Shape $head -Text $Title -FontSize 14 -Bold $true -Color $script:WHITE -Align 1
+        -Left ($Left + 0.16) -Top ($Top + 0.16) -Width $HeaderWidth -Height 0.42 -FillColor $AccentColor -LineColor $AccentColor
+    Set-TextShape -Shape $head -Text $Title -FontSize $HeaderFontSize -Bold $true -Color $script:WHITE -Align 1
     return $panel
 }
 
@@ -408,6 +457,49 @@ function Add-StepRow {
     return $row
 }
 
+function Add-ArrowCallout {
+    param(
+        [Parameter(Mandatory = $true)] $Slide,
+        [Parameter(Mandatory = $true)] [double] $TextLeft,
+        [Parameter(Mandatory = $true)] [double] $TextTop,
+        [Parameter(Mandatory = $true)] [double] $TextWidth,
+        [Parameter(Mandatory = $true)] [string] $Title,
+        [Parameter(Mandatory = $true)] [double] $TargetX,
+        [Parameter(Mandatory = $true)] [double] $TargetY,
+        [double] $LineWidth = 2.55
+    )
+
+    $titleBox = Add-TextBox -Slide $Slide -Left $TextLeft -Top $TextTop -Width $TextWidth -Height 0.24
+    Set-TextShape -Shape $titleBox -Text $Title -FontSize 15 -Bold $true -Color $script:TEXT
+
+    $underlineY = $TextTop + 0.30
+    $lineLeft = $TextLeft
+    $lineRight = $TextLeft + $LineWidth
+
+    $underline = $Slide.Shapes.AddLine(
+        (InchesToPoints $lineLeft),
+        (InchesToPoints $underlineY),
+        (InchesToPoints $lineRight),
+        (InchesToPoints $underlineY)
+    )
+    $underline.Line.ForeColor.RGB = $script:OCHRE
+    $underline.Line.Weight = 1.2
+
+    $leader = $Slide.Shapes.AddLine(
+        (InchesToPoints $lineLeft),
+        (InchesToPoints $underlineY),
+        (InchesToPoints $TargetX),
+        (InchesToPoints $TargetY)
+    )
+    $leader.Line.ForeColor.RGB = $script:OCHRE
+    $leader.Line.Weight = 1.15
+    $leader.Line.EndArrowheadStyle = [Microsoft.Office.Core.MsoArrowheadStyle]::msoArrowheadTriangle
+    $leader.Line.EndArrowheadLength = [Microsoft.Office.Core.MsoArrowheadLength]::msoArrowheadLengthMedium
+    $leader.Line.EndArrowheadWidth = [Microsoft.Office.Core.MsoArrowheadWidth]::msoArrowheadNarrow
+
+    return $titleBox
+}
+
 function New-DetailSlide {
     param(
         [Parameter(Mandatory = $true)] $Presentation,
@@ -499,6 +591,146 @@ function New-CranePurposeSlide {
     return $slide
 }
 
+function New-CraneParametersSlide {
+    param(
+        [Parameter(Mandatory = $true)] $Presentation,
+        [Parameter(Mandatory = $true)] [string] $Code,
+        [Parameter(Mandatory = $true)] $BackTarget
+    )
+
+    $slide = New-ThemeSlide -Presentation $Presentation -Code $Code -Title "Основные параметры крана" -Subtitle "Подвал к слайду S008"
+    Add-Panel -Slide $slide -Left 0.82 -Top 1.64 -Width 11.46 -Height 4.92 -Title "Основные параметры подъемных кранов" -AccentColor $script:BLUE | Out-Null
+
+    $body = Add-TextBox -Slide $slide -Left 1.08 -Top 2.38 -Width 10.88 -Height 3.72
+    Set-TermDefinitionBlock -Shape $body -FontSize 14 -TextColor $script:TEXT -TermColor $script:BLUE -Items @(
+        @{ Term = "Грузоподъемность"; Definition = "предельный вес груза, который кран может поднять (уже включает массу строп, траверс и крюка)." },
+        @{ Term = "Длина вылета"; Definition = "расстояние от шарнира (пяты) стрелы до оси головных блоков." },
+        @{ Term = "Вылет крюка"; Definition = "расстояние по горизонтали от оси вращения крана до вертикальной оси крюка на ровной площадке." },
+        @{ Term = "Грузовая характеристика"; Definition = "график или таблица, показывающая, какой вес кран может безопасно поднять на каждом вылете." },
+        @{ Term = "Грузовой момент"; Definition = "произведение веса груза на вылет стрелы; главный показатель устойчивости крана против опрокидывания." },
+        @{ Term = "Высота подъема"; Definition = "расстояние от земли (уровня стоянки) до крюка в его крайнем верхнем положении." },
+        @{ Term = "Глубина опускания"; Definition = "расстояние от земли до крюка в его крайнем нижнем положении (в котловане или колодце)." },
+        @{ Term = "Скорость перемещения груза"; Definition = "скорость вертикального подъема или опускания максимального для крана веса." },
+        @{ Term = "Скорость посадки"; Definition = "минимальная скорость плавного опускания груза для его точной и безопасной укладки (монтажа)." },
+        @{ Term = "Скорость перемещения"; Definition = "скорость горизонтального передвижения самого крана по площадке с грузом на крюке." },
+        @{ Term = "Частота обращения"; Definition = "скорость вращения поворотной платформы крана со стрелой и грузом вокруг своей оси." }
+    )
+
+    $backBtn = Add-Button -Slide $slide -Left 0.72 -Top 6.62 -Width 2.58 -Height 0.50 -Text "Вернуться к S008" -FillColor $script:STEEL -FontSize 16
+    Set-SlideJump -Shape $backBtn -TargetSlide $BackTarget
+    return $slide
+}
+
+function Add-ConstructionRow {
+    param(
+        [Parameter(Mandatory = $true)] $Slide,
+        [Parameter(Mandatory = $true)] [double] $Top,
+        [Parameter(Mandatory = $true)] [string] $Term,
+        [Parameter(Mandatory = $true)] [string] $Definition,
+        [int] $TermColor = 0
+    )
+
+    if ($TermColor -eq 0) {
+        $TermColor = $script:GREEN
+    }
+
+    $termBox = Add-TextBox -Slide $Slide -Left 1.08 -Top $Top -Width 2.40 -Height 0.34
+    Set-TextShape -Shape $termBox -Text "• $Term" -FontSize 16 -Bold $true -Color $TermColor
+
+    $defBox = Add-TextBox -Slide $Slide -Left 3.24 -Top $Top -Width 8.62 -Height 0.56
+    Set-TextShape -Shape $defBox -Text $Definition -FontSize 15 -Color $script:TEXT
+    return @($termBox, $defBox)
+}
+
+function New-CraneConstructionSlide {
+    param(
+        [Parameter(Mandatory = $true)] $Presentation,
+        [Parameter(Mandatory = $true)] [string] $Code,
+        [Parameter(Mandatory = $true)] $BackTarget,
+        $HookTarget = $null
+    )
+
+    $slide = New-ThemeSlide -Presentation $Presentation -Code $Code -Title "Конструктивные особенности" -Subtitle "Подвал к слайду S008"
+    Add-Panel -Slide $slide -Left 0.82 -Top 1.64 -Width 11.46 -Height 4.92 -Title "Что нужно знать о конструкции крана" -AccentColor $script:GREEN | Out-Null
+
+    Add-ConstructionRow -Slide $slide -Top 2.20 -Term "Опора" -Definition "колеса, рельсы или фундамент. Держит баланс, исключает опрокидывание." | Out-Null
+    Add-ConstructionRow -Slide $slide -Top 2.64 -Term "Стрела (мост)" -Definition "металлоконструкция. Задает направление движения груза." | Out-Null
+    Add-ConstructionRow -Slide $slide -Top 3.08 -Term "Тележка" -Definition "подвижная платформа на стреле или мосту. Перемещает груз вдоль них." | Out-Null
+    Add-ConstructionRow -Slide $slide -Top 3.52 -Term "Лебедка" -Definition "барабан с мотором. Наматывает канат для подъема и опускания." | Out-Null
+    Add-ConstructionRow -Slide $slide -Top 3.96 -Term "Тормоз" -Definition "блокиратор лебедки. Фиксирует канат, чтобы груз не упал под своим весом." | Out-Null
+
+    $hookBtn = Add-Button -Slide $slide -Left 1.08 -Top 4.40 -Width 2.10 -Height 0.34 -Text "Крюк" -FillColor $script:BLUE -FontSize 14
+    $hookDef = Add-TextBox -Slide $slide -Left 3.24 -Top 4.40 -Width 8.62 -Height 0.38
+    Set-TextShape -Shape $hookDef -Text "точка зацепа. На него вешается грузозахватное приспособление." -FontSize 15 -Color $script:TEXT
+
+    $hookAssemblyBtn = Add-Button -Slide $slide -Left 1.08 -Top 4.84 -Width 2.10 -Height 0.34 -Text "Крюковая подвеска" -FillColor $script:BLUE -FontSize 12
+    $hookAssemblyDef = Add-TextBox -Slide $slide -Left 3.24 -Top 4.84 -Width 8.62 -Height 0.42
+    Set-TextShape -Shape $hookAssemblyDef -Text "подвижный блок, удерживающий крюк и натягивающий канат." -FontSize 15 -Color $script:TEXT
+
+    $summary = Add-TextBox -Slide $slide -Left 1.08 -Top 5.44 -Width 10.90 -Height 0.52
+    Set-TextShape -Shape $summary -Text "Суть работы: Опора держит кран, стрела задает направление, тележка везет груз вдоль стрелы, лебедка мотает канат, тормоз держит вес, а крюк держит стропы." -FontSize 14 -Bold $true -Color $script:TEXT
+
+    if ($HookTarget) {
+        Set-SlideJump -Shape $hookBtn -TargetSlide $HookTarget
+        Set-SlideJump -Shape $hookAssemblyBtn -TargetSlide $HookTarget
+    }
+
+    $backBtn = Add-Button -Slide $slide -Left 0.72 -Top 6.62 -Width 2.58 -Height 0.50 -Text "Вернуться к S008" -FillColor $script:STEEL -FontSize 16
+    Set-SlideJump -Shape $backBtn -TargetSlide $BackTarget
+    return $slide
+}
+
+function New-HookDetailSlide {
+    param(
+        [Parameter(Mandatory = $true)] $Presentation,
+        [Parameter(Mandatory = $true)] [string] $Code,
+        $BackTarget = $null
+    )
+
+    $slide = New-ThemeSlide -Presentation $Presentation -Code $Code -Title "Крюк и крюковая подвеска" -Subtitle "Поподвал к слайду S008-P03"
+
+    Add-Panel -Slide $slide -Left 0.82 -Top 1.64 -Width 5.44 -Height 4.66 -Title "Крюк/гак" -AccentColor $script:BLUE -HeaderWidth 1.72 | Out-Null
+    $schemeFrame = Add-Box -Slide $slide -ShapeType ([Microsoft.Office.Core.MsoAutoShapeType]::msoShapeRoundedRectangle) `
+        -Left 1.08 -Top 2.12 -Width 4.92 -Height 3.92 -FillColor $script:WHITE -LineColor $script:LINE
+    $schemeFrame.Line.Weight = 1.0
+    Add-FitPicture -Slide $slide -ImagePath $script:HookSchemeImagePath -Left 1.18 -Top 2.18 -Width 4.72 -Height 3.78 | Out-Null
+
+    Add-Panel -Slide $slide -Left 6.48 -Top 1.64 -Width 5.80 -Height 4.66 -Title "Крюк: что проверять при выбраковке" -AccentColor $script:RED -HeaderWidth 4.82 -HeaderFontSize 13 | Out-Null
+    $rejectFrame = Add-Box -Slide $slide -ShapeType ([Microsoft.Office.Core.MsoAutoShapeType]::msoShapeRoundedRectangle) `
+        -Left 6.76 -Top 2.18 -Width 1.82 -Height 3.10 -FillColor $script:WHITE -LineColor $script:LINE
+    $rejectFrame.Line.Weight = 1.0
+    Add-FitPicture -Slide $slide -ImagePath $script:HookRejectImagePath -Left 6.86 -Top 2.28 -Width 1.62 -Height 2.90 | Out-Null
+
+    $rejectNotes = Add-TextBox -Slide $slide -Left 8.94 -Top 2.34 -Width 2.90 -Height 2.84
+    $rejectNotes.TextFrame.MarginLeft = 0
+    $rejectNotes.TextFrame.MarginRight = 0
+    $rejectNotes.TextFrame.MarginTop = 0
+    $rejectNotes.TextFrame.MarginBottom = 0
+    Set-Lines -Shape $rejectNotes -Lines @(
+        "1. Износ шейки крюка",
+        "2. Отсутствие предохранительного устройства",
+        "3. Износ более 10%",
+        "4. Клюв крюка отогнут"
+    ) -FontSize 16 -Color $script:TEXT -Bold $true
+
+    $rejectNoteSmall = Add-TextBox -Slide $slide -Left 8.94 -Top 4.72 -Width 2.90 -Height 1.12
+    $rejectNoteSmall.TextFrame.MarginLeft = 0
+    $rejectNoteSmall.TextFrame.MarginRight = 0
+    $rejectNoteSmall.TextFrame.MarginTop = 0
+    $rejectNoteSmall.TextFrame.MarginBottom = 0
+    Set-Lines -Shape $rejectNoteSmall -Lines @(
+        "Запорная планка может отсутствовать при:",
+        "Горячие цеха — при работе с расплавленным металлом и шлаком, так как замок плавится или деформируется от жары.",
+        "Автоматические захваты — при дистанционной расстроповке, где замок технически мешает автоматическому сбросу строп."
+    ) -FontSize 10 -Color $script:MUTED
+
+    $backBtn = Add-Button -Slide $slide -Left 0.72 -Top 6.62 -Width 2.28 -Height 0.50 -Text "Назад" -FillColor $script:STEEL -FontSize 16
+    if ($BackTarget) {
+        Set-SlideJump -Shape $backBtn -TargetSlide $BackTarget
+    }
+    return $slide
+}
+
 $BG = RgbValue 247 243 235
 $CARD = RgbValue 255 251 246
 $WHITE = RgbValue 255 255 255
@@ -515,7 +747,7 @@ $OCHRE = RgbValue 207 141 62
 $workspaceRoot = (Resolve-Path (Join-Path $scriptDir "..\..\..\..")).Path
 $livePreviewDir = Join-Path $workspaceRoot "presentations\ispring-course\module-01-stropovka-gruzov\live-preview"
 $sourcePath = Join-Path $livePreviewDir "S001-S007_live_preview_working_2026-06-24_v32.pptx"
-$outputPath = Join-Path $livePreviewDir "S001-S021_live_preview_working_2026-06-25_v11.pptx"
+$outputPath = Join-Path $livePreviewDir "S001-S021_live_preview_working_2026-06-25_v22.pptx"
 
 $assetRoot = Join-Path $workspaceRoot "assets\course-media\module-01-stropovka-gruzov\diagrams\error-analysis"
 $imageMap = @{
@@ -544,8 +776,11 @@ try {
     $substDrive = Get-FreeSubstDrive
     & subst $substDrive $workspaceRoot | Out-Null
     $aliasRoot = $substDrive
-    $outputAlias = Join-Path $aliasRoot "presentations\ispring-course\module-01-stropovka-gruzov\live-preview\S001-S021_live_preview_working_2026-06-25_v11.pptx"
+    $outputAlias = Join-Path $aliasRoot "presentations\ispring-course\module-01-stropovka-gruzov\live-preview\S001-S021_live_preview_working_2026-06-25_v22.pptx"
     $craneImageRoot = Join-Path $aliasRoot "assets\course-media\module-01-stropovka-gruzov\images\cranes"
+    $visualBankRoot = Join-Path $aliasRoot "assets\reference_visuals\visual-bank\images"
+    $script:HookSchemeImagePath = Join-Path $visualBankRoot "VIS-0020_hook-safety-diagram-restored_s008-p03-pp02.png"
+    $script:HookRejectImagePath = Join-Path $visualBankRoot "VIS-0021_hook-defects-callout-numbered_s008-p03-pp02.png"
 
     $pp = New-Object -ComObject PowerPoint.Application
     $pp.Visible = -1
@@ -755,15 +990,16 @@ try {
         pipe = (Join-Path $craneImageRoot "pipe-layer-crane.png")
     }
     Set-SlideJump -Shape $slides["S008-P01-PP01"].Shapes.Item($slides["S008-P01-PP01"].Shapes.Count) -TargetSlide $slides["S008-P01"]
-    $slides["S008-P02"] = New-DetailSlide -Presentation $presentation -Code "S008-P02" -Title "Основные параметры крана" `
-        -Lead "Подробный материал по основным параметрам крана" -BackTarget $slides["S008"]
-    $slides["S008-P03"] = New-DetailSlide -Presentation $presentation -Code "S008-P03" -Title "Конструктивные особенности" `
-        -Lead "Подробный материал по конструктивным особенностям" -BackTarget $slides["S008"]
+    $slides["S008-P02"] = New-CraneParametersSlide -Presentation $presentation -Code "S008-P02" -BackTarget $slides["S008"]
+    $slides["S008-P03-PP02"] = New-HookDetailSlide -Presentation $presentation -Code "S008-P03-PP02" -BackTarget $null
+    $slides["S008-P03"] = New-CraneConstructionSlide -Presentation $presentation -Code "S008-P03" -BackTarget $slides["S008"] -HookTarget $slides["S008-P03-PP02"]
+    Set-SlideJump -Shape $slides["S008-P03-PP02"].Shapes.Item($slides["S008-P03-PP02"].Shapes.Count) -TargetSlide $slides["S008-P03"]
 
     $slides["S008-P01"].MoveTo(20)
     $slides["S008-P01-PP01"].MoveTo(21)
     $slides["S008-P02"].MoveTo(22)
     $slides["S008-P03"].MoveTo(23)
+    $slides["S008-P03-PP02"].MoveTo(24)
 
     $linearCodes = @("S008", "S009", "S010", "S011", "S012", "S013", "S014", "S015", "S016", "S017", "S018", "S019", "S020", "S021")
     for ($i = 0; $i -lt $linearCodes.Count; $i++) {
