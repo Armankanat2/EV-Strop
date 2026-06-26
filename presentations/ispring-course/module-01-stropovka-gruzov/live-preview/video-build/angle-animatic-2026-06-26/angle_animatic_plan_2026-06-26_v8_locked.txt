@@ -1,0 +1,24 @@
+voice=E:\нейросети\ПРОЕКТ ЭВ СТРОПАЛЬЩИК\assets\course-media\module-01-stropovka-gruzov\audio\angle-animation-voiceover-short-male_2026-06-26_dmitry.mp3
+subtitles=E:\нейросети\ПРОЕКТ ЭВ СТРОПАЛЬЩИК\assets\course-media\module-01-stropovka-gruzov\audio\angle-animation-voiceover-short-male_2026-06-26_dmitry.vtt
+fx=E:\нейросети\ПРОЕКТ ЭВ СТРОПАЛЬЩИК\presentations\ispring-course\module-01-stropovka-gruzov\live-preview\video-build\angle-animatic-2026-06-26\angle_animatic_fx.wav
+full_audio=E:\нейросети\ПРОЕКТ ЭВ СТРОПАЛЬЩИК\presentations\ispring-course\module-01-stropovka-gruzov\live-preview\video-build\angle-animatic-2026-06-26\angle_animatic_audio.wav
+video=E:\нейросети\ПРОЕКТ ЭВ СТРОПАЛЬЩИК\presentations\ispring-course\module-01-stropovka-gruzov\live-preview\video-build\angle-animatic-2026-06-26\angle_animatic_2026-06-26.mp4
+poster=E:\нейросети\ПРОЕКТ ЭВ СТРОПАЛЬЩИК\presentations\ispring-course\module-01-stropovka-gruzov\live-preview\video-build\angle-animatic-2026-06-26\angle_animatic_poster_2026-06-26.png
+fps=15
+voice_end=37.596
+pause_after_voice=2.2
+vibration_seconds=1.8
+clap_seconds=0.12
+tail_seconds=0.88
+total_seconds=42.596
+
+stage_ranges:
+30deg=0.000-6.334
+45deg=6.334-13.799
+60deg=13.799-21.172
+90deg=21.172-28.001
+100deg=28.001-37.596
+silent_hold=37.596-39.796
+vibration=39.796-41.596
+break=41.596-41.716
+tail=41.716-42.596

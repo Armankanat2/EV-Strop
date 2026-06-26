@@ -1,0 +1,14 @@
+# Clean Frames V7
+
+contact_sheet=E:\нейросети\ПРОЕКТ ЭВ СТРОПАЛЬЩИК\assets\course-media\module-01-stropovka-gruzov\images\angle-animation-clean-frames-v7\angle-clean-frames-contact-sheet_v7_2026-06-26.png
+
+30°_ui=E:\нейросети\ПРОЕКТ ЭВ СТРОПАЛЬЩИК\assets\course-media\module-01-stropovka-gruzov\images\angle-animation-clean-frames-v7\angle-030_full-ui_v7_2026-06-26.png
+30°_panel=E:\нейросети\ПРОЕКТ ЭВ СТРОПАЛЬЩИК\assets\course-media\module-01-stropovka-gruzov\images\angle-animation-clean-frames-v7\angle-030_panel-only_v7_2026-06-26.png
+45°_ui=E:\нейросети\ПРОЕКТ ЭВ СТРОПАЛЬЩИК\assets\course-media\module-01-stropovka-gruzov\images\angle-animation-clean-frames-v7\angle-045_full-ui_v7_2026-06-26.png
+45°_panel=E:\нейросети\ПРОЕКТ ЭВ СТРОПАЛЬЩИК\assets\course-media\module-01-stropovka-gruzov\images\angle-animation-clean-frames-v7\angle-045_panel-only_v7_2026-06-26.png
+60°_ui=E:\нейросети\ПРОЕКТ ЭВ СТРОПАЛЬЩИК\assets\course-media\module-01-stropovka-gruzov\images\angle-animation-clean-frames-v7\angle-060_full-ui_v7_2026-06-26.png
+60°_panel=E:\нейросети\ПРОЕКТ ЭВ СТРОПАЛЬЩИК\assets\course-media\module-01-stropovka-gruzov\images\angle-animation-clean-frames-v7\angle-060_panel-only_v7_2026-06-26.png
+90°_ui=E:\нейросети\ПРОЕКТ ЭВ СТРОПАЛЬЩИК\assets\course-media\module-01-stropovka-gruzov\images\angle-animation-clean-frames-v7\angle-090_full-ui_v7_2026-06-26.png
+90°_panel=E:\нейросети\ПРОЕКТ ЭВ СТРОПАЛЬЩИК\assets\course-media\module-01-stropovka-gruzov\images\angle-animation-clean-frames-v7\angle-090_panel-only_v7_2026-06-26.png
+100°_ui=E:\нейросети\ПРОЕКТ ЭВ СТРОПАЛЬЩИК\assets\course-media\module-01-stropovka-gruzov\images\angle-animation-clean-frames-v7\angle-100_full-ui_v7_2026-06-26.png
+100°_panel=E:\нейросети\ПРОЕКТ ЭВ СТРОПАЛЬЩИК\assets\course-media\module-01-stropovka-gruzov\images\angle-animation-clean-frames-v7\angle-100_panel-only_v7_2026-06-26.png
