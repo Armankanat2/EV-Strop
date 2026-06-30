@@ -44,7 +44,6 @@ ASSETS = {
     "S038": Path("assets/course-media/module-02-tekhnologiya-raboty-stropalshchika/diagrams/error-analysis/S031-P11_raskachivanie-liudi_case-diagram.png"),
     "S039": Path("assets/course-media/module-02-tekhnologiya-raboty-stropalshchika/diagrams/error-analysis/S031-P09_skladovanie_podkladki-diagram.png"),
     "S031-P01": Path("assets/course-media/module-02-tekhnologiya-raboty-stropalshchika/diagrams/error-analysis/S031-P01_podgotovka-k-rabote_checklist.png"),
-    "S034-P01": Path("assets/course-media/module-02-tekhnologiya-raboty-stropalshchika/diagrams/error-analysis/S031-P03_obviazka-pered-podem_steps.png"),
     "S035-P01": Path("assets/course-media/module-01-stropovka-gruzov/images/S004_avatar-1_signal-palm-down-source.png"),
     "S035-PP01": Path("assets/course-media/module-01-stropovka-gruzov/images/S004_avatar-1_signal-podnyat-gruz_white-bg.png"),
     "S037-P01": Path("assets/course-media/module-02-tekhnologiya-raboty-stropalshchika/diagrams/error-analysis/S031-P08_opasnaia-zona_movement-diagram.png"),
@@ -64,7 +63,6 @@ CAPTIONS = {
     "S038": "Нештатная ситуация: перемещение нужно остановить",
     "S039": "Подкладки и устойчивое положение перед расстроповкой",
     "S031-P01": "Подготовка: задание, условия, оснастка и рабочая зона",
-    "S034-P01": "Раскрытие маршрута операции по этапам",
     "S035-P01": "Способы подачи сигналов и пример ручной команды",
     "S035-PP01": "Галерея жестов должна читаться как единая система",
     "S037-P01": "Схема опасной зоны для отдельного разбора",
@@ -82,7 +80,6 @@ STEP_LABELS = {
     "S032": "Шаг 01",
     "S033": "Шаг 02",
     "S034": "Шаг 02",
-    "S034-P01": "Шаг 02",
     "S035": "Шаг 03",
     "S035-P01": "Шаг 03",
     "S035-PP01": "Шаг 03",
@@ -106,7 +103,6 @@ LEVEL_LABELS = {
     "S032": "Критично",
     "S033": "Роль",
     "S034": "Маршрут",
-    "S034-P01": "Опора",
     "S035": "Сигнал",
     "S035-P01": "Сигнал",
     "S035-PP01": "Сигнал",
@@ -337,7 +333,7 @@ def restyle_slide(slide):
     if "-P01" in code or "-PP01" in code:
         left_size = 13
         right_size = 13
-    if code in {"S031-P01", "S034-P01", "S035-P01", "S035-PP01", "S039-P01", "S039-PP01"}:
+    if code in {"S031-P01", "S035-P01", "S035-PP01", "S039-P01", "S039-PP01"}:
         left_size = 12
         right_size = 12
 
